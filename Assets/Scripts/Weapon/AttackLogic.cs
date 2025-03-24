@@ -8,6 +8,10 @@ public class AttackLogic : MonoBehaviour
 
 	private PlayerInputHandler inputHandler;
 
+	private ObjectPool bulletPool;
+
+	[SerializeField] private Transform weaponMuzzle;
+
 	private void Awake()
 	{
 		inputHandler = GetComponentInParent<PlayerInputHandler>();
@@ -16,6 +20,8 @@ public class AttackLogic : MonoBehaviour
 		{
 			inputHandler.OnAttack += ProcessAttack;
 		}
+
+		bulletPool = GameObject.Find("BulletPool").GetComponent<ObjectPool>();
 	}
 
 
@@ -27,5 +33,22 @@ public class AttackLogic : MonoBehaviour
 	private void ProcessAttack()
 	{
 		Debug.Log("Player is shooting");
+		//para empezar, hay que obtener un proyectil de la pool de proyectiles
+		if(bulletPool)
+		{
+			GameObject bullet = bulletPool.GetObject();
+
+			if(bullet)
+			{
+				bullet.transform.position = weaponMuzzle.position;
+
+				Bullet bulletComponent = bullet.GetComponent<Bullet>();
+
+				if(bulletComponent)
+				{
+					bulletComponent.Initialize(weaponMuzzle.forward);
+				}
+			}
+		}
 	}
 }

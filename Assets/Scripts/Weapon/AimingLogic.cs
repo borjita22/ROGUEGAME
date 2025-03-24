@@ -87,7 +87,7 @@ public class AimingLogic : MonoBehaviour
         else if (Gamepad.current != null && Gamepad.current.rightStick.ReadValue().sqrMagnitude > 0.1f)
         {
             //Debug.Log("Usando mando");
-            Debug.Log(Gamepad.current.rightStick.ReadValue().sqrMagnitude);
+            Debug.Log(Gamepad.current.rightStick.ReadValue());
             usingMouse = false;
         }
     }
@@ -116,16 +116,18 @@ public class AimingLogic : MonoBehaviour
         }
         else
         {
-            // Para el mando, usar directamente el input del stick derecho
-            // Solo actualizar si hay una entrada significativa (evitar drift)
-            if (aimInput.sqrMagnitude > 0.1f) // Zona muerta
-            {
-                // Actualizar dirección de apuntado
-                aimDirection = aimInput.normalized;
+            Vector2 stickInput = Gamepad.current.rightStick.ReadValue();
 
-                // También actualizar la posición del "mouse" en el mundo para mantener consistencia
-                // con el sistema de apuntado con ratón
-                Vector3 stickDirection = new Vector3(aimInput.x, 0, aimInput.y);
+            // Solo actualizar si hay una entrada significativa
+            if (stickInput.sqrMagnitude > 0.1f)
+            {
+                Debug.Log("Stick input: " + stickInput);
+
+                // Actualizar la dirección de apuntado
+                aimDirection = stickInput.normalized;
+
+                // Actualizar la posición en el mundo para consistencia
+                Vector3 stickDirection = new Vector3(stickInput.x, 0, stickInput.y);
                 mouseWorldPosition = playerTransform.position + stickDirection * 10f;
             }
         }
