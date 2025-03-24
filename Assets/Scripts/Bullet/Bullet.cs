@@ -76,5 +76,9 @@ public class Bullet : MonoBehaviour
 		{
             Debug.Log("Bullet collides");
 		}
+        else if(other.TryGetComponent<EnemyController>(out var enemy))
+		{
+            enemy.TakeDamage(10f);
+		}
 	}
 }
