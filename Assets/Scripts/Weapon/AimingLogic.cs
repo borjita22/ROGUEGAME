@@ -31,6 +31,13 @@ public class AimingLogic : MonoBehaviour
     public static event Action<bool> OnFrontViewVisibilityChanged;
 
 
+    [Header("Vertical Aiming")]
+    [SerializeField] private float minVerticalAngle = -30f;
+    [SerializeField] private float maxVerticalAngle = 30f;
+    [SerializeField] private float verticalRotationSpeed = 60f; // Grados por segundo
+    private float currentVerticalAngle = 0f;
+
+
     private void Awake()
 	{
         inputHandler = GetComponentInParent<PlayerInputHandler>();
@@ -40,6 +47,16 @@ public class AimingLogic : MonoBehaviour
 
         if (weaponSprite != null)
             weaponSpriteRenderer = weaponSprite.GetComponent<SpriteRenderer>();
+    }
+
+	private void OnEnable()
+	{
+        inputHandler._ResetVRotation += ResetVerticalRotation;
+	}
+
+	private void OnDisable()
+	{
+        inputHandler._ResetVRotation -= ResetVerticalRotation;
     }
 
 
@@ -74,6 +91,7 @@ public class AimingLogic : MonoBehaviour
 	{
         // Procesar el input de apuntado y actualizar la posición/rotación del arma
         ProcessAiming();
+        ProcessVerticalAiming();
     }
 
 	//Esto vamos a poder centralizarlo en otra clase, y tanto el movimiento como el apuntado pueden acudir a esa clase a comprobar
@@ -87,7 +105,7 @@ public class AimingLogic : MonoBehaviour
         else if (Gamepad.current != null && Gamepad.current.rightStick.ReadValue().sqrMagnitude > 0.1f)
         {
             //Debug.Log("Usando mando");
-            Debug.Log(Gamepad.current.rightStick.ReadValue());
+            //Debug.Log(Gamepad.current.rightStick.ReadValue());
             usingMouse = false;
         }
     }
@@ -135,6 +153,42 @@ public class AimingLogic : MonoBehaviour
         Debug.DrawRay(this.transform.position, this.transform.forward * 5f, Color.yellow);
         PositionWeaponInOrbit();
     }
+
+    private void ProcessVerticalAiming()
+	{
+        float verticalInput = 0f;
+
+        if(usingMouse)
+		{
+            verticalInput = Mouse.current.scroll.ReadValue().y;
+		}
+        else if(Gamepad.current != null)
+		{
+            if(Gamepad.current.leftShoulder.isPressed)
+			{
+                verticalInput -= 1f;
+			}
+            if(Gamepad.current.rightShoulder.isPressed)
+			{
+                verticalInput += 1f;
+			}
+		}
+
+        if(Mathf.Abs(verticalInput) > 0.001f)
+		{
+            currentVerticalAngle += verticalInput * verticalRotationSpeed * Time.deltaTime;
+
+            currentVerticalAngle = Mathf.Clamp(currentVerticalAngle, minVerticalAngle, maxVerticalAngle);
+		}
+
+        Debug.Log("Current vertical angle " + currentVerticalAngle);
+	}
+
+    //Settea la rotacion vertical del arma a 0 para centrarla
+    private void ResetVerticalRotation()
+	{
+        currentVerticalAngle = 0f;
+	}
 
 
     private Vector3 GetWorldPositionFromScreenPoint(Vector2 screenPoint)
@@ -196,7 +250,11 @@ public class AimingLogic : MonoBehaviour
         if (directionToTarget.sqrMagnitude > 0.001f)
         {
             transform.forward = directionToTarget.normalized;
+
+            Quaternion verticalRotation = Quaternion.Euler(currentVerticalAngle, 0, 0);
+            transform.rotation = transform.rotation * verticalRotation;
         }
+
 
     }
 

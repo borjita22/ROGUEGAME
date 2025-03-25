@@ -10,10 +10,13 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 	private InputAction movementAction;
 	private InputAction aimingAction;
 	private InputAction attackAction;
+	private InputAction resetVRotationAction;
 
 	private bool usingGamepad = false;
 
 	public Vector2 MovementInput => movementAction.ReadValue<Vector2>();
+
+	public Action _ResetVRotation;
 
 	public Vector2 AimingInput
 	{
@@ -58,23 +61,33 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		movementAction = playerInput.FindActionMap("Movement").FindAction("Move");
 		aimingAction = playerInput.FindActionMap("Combat").FindAction("Aim");
 		attackAction = playerInput.FindActionMap("Combat").FindAction("Attack");
+		resetVRotationAction = playerInput.FindActionMap("Combat").FindAction("ResetVerticalRotation");
 
 		attackAction.performed += OnAttackPerformed;
+		resetVRotationAction.performed += OnResetVRotationPerformed;
 
 		movementAction.Enable();
 		aimingAction.Enable();
 		attackAction.Enable();
+		resetVRotationAction.Enable();
 	}
 
 	private void OnDisable()
 	{
 		movementAction?.Disable();
 		aimingAction?.Disable();
+		attackAction.Disable();
+		resetVRotationAction.Disable();
 	}
 
 	private void OnAttackPerformed(InputAction.CallbackContext context)
 	{
 		isAttacking = true;
 		OnAttack?.Invoke();
+	}
+
+	private void OnResetVRotationPerformed(InputAction.CallbackContext context)
+	{
+		_ResetVRotation?.Invoke();
 	}
 }
