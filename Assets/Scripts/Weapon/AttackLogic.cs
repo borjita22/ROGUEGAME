@@ -16,12 +16,17 @@ public class AttackLogic : MonoBehaviour
 	{
 		inputHandler = GetComponentInParent<PlayerInputHandler>();
 
+		
+
+		bulletPool = GameObject.Find("BulletPool").GetComponent<ObjectPool>();
+	}
+
+	private void OnEnable()
+	{
 		if (inputHandler)
 		{
 			inputHandler.OnAttack += ProcessAttack;
 		}
-
-		bulletPool = GameObject.Find("BulletPool").GetComponent<ObjectPool>();
 	}
 
 

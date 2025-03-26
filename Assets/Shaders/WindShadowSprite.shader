@@ -19,7 +19,9 @@ Shader "Custom/WindSpriteWithShadows"
 
             // Pasada principal - Renderiza el sprite con efecto de viento
             Pass {
+                ZWrite On
                 Cull Off
+                
 
                 CGPROGRAM
                 #pragma vertex vert

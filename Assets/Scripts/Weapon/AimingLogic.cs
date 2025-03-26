@@ -37,6 +37,10 @@ public class AimingLogic : MonoBehaviour
     [SerializeField] private float verticalRotationSpeed = 60f; // Grados por segundo
     private float currentVerticalAngle = 0f;
 
+    [Header("Aiming line references")]
+    [SerializeField] private Transform weaponMuzzle;
+    private LineRenderer aimingLine;
+
 
     private void Awake()
 	{
@@ -47,6 +51,8 @@ public class AimingLogic : MonoBehaviour
 
         if (weaponSprite != null)
             weaponSpriteRenderer = weaponSprite.GetComponent<SpriteRenderer>();
+
+        aimingLine = GetComponentInChildren<LineRenderer>();
     }
 
 	private void OnEnable()
@@ -85,6 +91,7 @@ public class AimingLogic : MonoBehaviour
         // Actualizar la orientación del sprite
         //UpdateSpriteOrientation();
         UpdateSpriteVisibility();
+        UpdateAimingLine();
     }
 
 	private void FixedUpdate()
@@ -273,6 +280,32 @@ public class AimingLogic : MonoBehaviour
         OnFrontViewVisibilityChanged?.Invoke(showFrontView);
 
     }
+
+    private void UpdateAimingLine()
+	{
+        if (aimingLine == null) return;
+
+        /*
+        aimingLine.SetPosition(0, weaponMuzzle.transform.position);
+        aimingLine.SetPosition(1, weaponMuzzle.transform.position + (weaponMuzzle.transform.forward * 10f)); //esto luego sera dependiente del alcance del arma
+        */
+        bool _hit = Physics.Raycast(weaponMuzzle.transform.position, transform.forward, out RaycastHit hit, 10f);
+
+        if(_hit)
+		{
+            DrawAimingLine(weaponMuzzle.transform.position, hit.point);
+        }
+        else
+		{
+            DrawAimingLine(weaponMuzzle.transform.position, weaponMuzzle.transform.position + (weaponMuzzle.transform.forward * 10f));
+		}
+    }
+
+    private void DrawAimingLine(Vector3 startPosition, Vector3 endPosition)
+	{
+        aimingLine.SetPosition(0, startPosition);
+        aimingLine.SetPosition(1, endPosition);
+	}
 
     /// <summary>
     /// Obtiene la dirección actual de apuntado (útil para otros sistemas como el disparo)

@@ -11,12 +11,18 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 	private InputAction aimingAction;
 	private InputAction attackAction;
 	private InputAction resetVRotationAction;
+	private InputAction weaponStatusAction;
 
 	private bool usingGamepad = false;
 
 	public Vector2 MovementInput => movementAction.ReadValue<Vector2>();
 
 	public Action _ResetVRotation;
+
+	private Weapon weapon;
+	private bool weaponEnabled = true;
+
+	
 
 	public Vector2 AimingInput
 	{
@@ -58,18 +64,23 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 
 	private void Awake()
 	{
+		weapon = GetComponentInChildren<Weapon>();
+
 		movementAction = playerInput.FindActionMap("Movement").FindAction("Move");
 		aimingAction = playerInput.FindActionMap("Combat").FindAction("Aim");
 		attackAction = playerInput.FindActionMap("Combat").FindAction("Attack");
 		resetVRotationAction = playerInput.FindActionMap("Combat").FindAction("ResetVerticalRotation");
+		weaponStatusAction = playerInput.FindActionMap("Combat").FindAction("SetWeaponStatus");
 
 		attackAction.performed += OnAttackPerformed;
 		resetVRotationAction.performed += OnResetVRotationPerformed;
+		weaponStatusAction.performed += SetWeaponStatus;
 
 		movementAction.Enable();
 		aimingAction.Enable();
 		attackAction.Enable();
 		resetVRotationAction.Enable();
+		weaponStatusAction.Enable();
 	}
 
 	private void OnDisable()
@@ -90,4 +101,14 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 	{
 		_ResetVRotation?.Invoke();
 	}
+
+	private void SetWeaponStatus(InputAction.CallbackContext context)
+	{
+		weaponEnabled = !weaponEnabled;
+
+		weapon.gameObject.SetActive(weaponEnabled);
+
+
+	}
+
 }

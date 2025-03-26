@@ -40,6 +40,7 @@ Material:
     m_Floats:
     - _ColorMask: 15
     - _Cutoff: 0.5
+    - _DepthOffset: 0.1
     - _HeightFalloff: 0.1
     - _ShadowIntensity: 0.6
     - _Stencil: 0

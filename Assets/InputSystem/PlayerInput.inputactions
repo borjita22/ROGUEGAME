@@ -114,6 +114,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "SetWeaponStatus",
+                    "type": "Button",
+                    "id": "699b4082-326c-4dee-8571-06efc5d93b3c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -180,6 +189,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "ResetVerticalRotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1a8d57d3-225d-439f-a438-86eb35f69a74",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SetWeaponStatus",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d2b7ec1b-6dd6-46ed-9b4a-73e75aa6f12e",
+                    "path": "<Gamepad>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SetWeaponStatus",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
