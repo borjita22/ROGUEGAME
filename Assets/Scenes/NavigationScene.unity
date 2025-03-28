@@ -5258,7 +5258,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteTransform: {fileID: 0}
   moveSpeed: 10
-  acceleration: 25
+  acceleration: 60
   decceleration: 35
 --- !u!114 &780423091
 MonoBehaviour:
@@ -5326,8 +5326,10 @@ MonoBehaviour:
   skillSlots:
   - skillDefinition: {fileID: 11400000, guid: 7ce8091abc6230e40a33bac2299e3292, type: 2}
   - skillDefinition: {fileID: 11400000, guid: 8d9d1c2f2dcf5ad4aa1f572a1a72447f, type: 2}
-  - skillDefinition: {fileID: 11400000, guid: 7ce8091abc6230e40a33bac2299e3292, type: 2}
-  - skillDefinition: {fileID: 11400000, guid: 8d9d1c2f2dcf5ad4aa1f572a1a72447f, type: 2}
+  - skillDefinition: {fileID: 11400000, guid: 3fa39bcd7ab59524ca2a8a989518dfcc, type: 2}
+  - skillDefinition: {fileID: 11400000, guid: 1918c3884841cf244bbaa7d879ac9816, type: 2}
+  skillWheelActive: 0
+  currentSelectedSkill: {fileID: 0}
 --- !u!1 &881109820
 GameObject:
   m_ObjectHideFlags: 0

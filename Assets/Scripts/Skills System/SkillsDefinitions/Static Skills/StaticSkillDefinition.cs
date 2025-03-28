@@ -7,20 +7,6 @@ public abstract class StaticSkillDefinition : SkillDefinition
     [Header("Static skill configuration")]
     public StaticSkillBehaviour staticBehaviour;
 
-	/*
-	public override ISkill CreateInstance(PlayerController owner)
-	{
-		switch (staticBehaviour)
-		{
-			case StaticSkillBehaviour.Dash:
-				break;
-			case StaticSkillBehaviour.Shield:
-				break;
-			case StaticSkillBehaviour.Heal:
-				break;
-		}
-	}
-	*/
 	public override ISkill CreateInstance(PlayerController owner)
 	{
 		switch (staticBehaviour)
@@ -32,7 +18,7 @@ public abstract class StaticSkillDefinition : SkillDefinition
 				return new ShieldSkill(this, owner);
 
 			case StaticSkillBehaviour.Heal:
-				break;
+				return new HealerSkill(this, owner);
 		}
 
 		return null; //temporal

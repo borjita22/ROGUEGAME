@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85afb747be116dd418f05ed9439eaf65, type: 3}
+  m_Name: FireProjectile
+  m_EditorClassIdentifier: 
+  skillName: Fire bullet
+  skillIcon: {fileID: 0}
+  description: Spawns a fire bullet
+  cooldown: 10
+  producedEffectTypes: 00000000
+  effectIntensity: 0
+  effectDuration: 0
+  skillPrefab: {fileID: 135014, guid: 30935fda57ba92043b16635a569cfa92, type: 3}
+  activationEffect: {fileID: 0}
+  activationSound: {fileID: 0}
+  spawnOffset: {x: 0, y: 0, z: 1}

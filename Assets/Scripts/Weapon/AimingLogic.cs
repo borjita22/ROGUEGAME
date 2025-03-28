@@ -315,4 +315,9 @@ public class AimingLogic : MonoBehaviour
         return aimDirection;
     }
 
+    public Transform GetWeaponMuzzle()
+	{
+        return weaponMuzzle;
+	}
+
 }

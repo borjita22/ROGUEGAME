@@ -20,7 +20,9 @@ public class PlayerSkillsController : MonoBehaviour
     private int selectedSkillIndex = 0;
 
     //Modo mando -> Control de rueda de habilidades
-    private bool skillWheelActive = false;
+    [SerializeField] private bool skillWheelActive = false;
+
+	[SerializeField] private SkillDefinition currentSelectedSkill;
 
 	private void OnEnable()
 	{
@@ -29,17 +31,19 @@ public class PlayerSkillsController : MonoBehaviour
 
 	private void Awake()
 	{
-		/*
-        if(weaponAimingLogic == null)
-		{
-            if(player)
-			{
-                weaponAimingLogic = player.GetComponentInChildren<AimingLogic>();
-			}
-		}
-		*/
+		
+        
+		
 		playerController = GetComponent<PlayerController>();
 		playerInput = GetComponent<PlayerInputHandler>();
+
+		if (weaponAimingLogic == null)
+		{
+			if (playerController)
+			{
+				weaponAimingLogic = playerController.GetComponentInChildren<AimingLogic>();
+			}
+		}
 
 		InitializeSkills();
 
@@ -63,6 +67,8 @@ public class PlayerSkillsController : MonoBehaviour
 				equippedSkills[i] = null;
 			}
 		}
+
+		currentSelectedSkill = skillSlots[0].skillDefinition;
 	}
 
 	private void RegisterInputEvents()
@@ -92,6 +98,8 @@ public class PlayerSkillsController : MonoBehaviour
 		selectedSkillIndex = (selectedSkillIndex + 1) % MAX_SKILL_SLOTS;
 
 		Debug.Log($"Skill switched to {selectedSkillIndex}");
+
+		currentSelectedSkill = skillSlots[selectedSkillIndex].skillDefinition;
 	}
 
 	private void PerformSkill()
@@ -103,6 +111,7 @@ public class PlayerSkillsController : MonoBehaviour
 	private void SetSkillWheelStatus(bool status)
 	{
 		Debug.Log("Wheel is enabled: " + status);
+		skillWheelActive = status;
 	}
 
 	//OJO, hay que ver si esta es la mejor manera para las skills del gamepad o habria que crear otro tipo de evento para que se reciba un index
@@ -110,9 +119,9 @@ public class PlayerSkillsController : MonoBehaviour
 	//Por ejemplo, la skill del boton A SIEMPRE va a tener el indice 0, lo unico que cambia es la potencial skill asignada a ese slot con ese indice, y asi con todas
 	private void PerformSkillGamepad(int skillIndex)
 	{
-		Debug.Log("Performing skill on index " + skillIndex);
 		if(skillWheelActive)
 		{
+			Debug.Log("Performing skill on index " + skillIndex);
 			UseSkillAtIndex(skillIndex);
 		}
 	}
@@ -124,8 +133,17 @@ public class PlayerSkillsController : MonoBehaviour
 
 		if(equippedSkills[index] != null && equippedSkills[index].CanUse())
 		{
-			equippedSkills[index].Use(playerController.GetMovementDirection()); //Esto seria momentaneo, solamente para ver si se ejecuta la skill que corresponda
+			if(! (equippedSkills[index].Definition is ProjectileSkillDefinition))
+			{
+				equippedSkills[index].Use(playerController.GetMovementDirection()); //Esto seria momentaneo, solamente para ver si se ejecuta la skill que corresponda
+			}
+			else
+			{
+				//Si es de proyectil, tiene que recibir si o si la direccion de apuntado, no la de movimiento
+				equippedSkills[index].Use(weaponAimingLogic.GetWeaponMuzzle().forward);
+			}
 		}
+			
 		else
 		{
 			Debug.Log("Skill cannot be used while it´s on cooldown");
