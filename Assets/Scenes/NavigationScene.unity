@@ -3216,6 +3216,38 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &421683865
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 421683866}
+  m_Layer: 0
+  m_Name: OBJECT POOLS
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &421683866
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421683865}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1190384918}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &434282048
 GameObject:
   m_ObjectHideFlags: 0
@@ -3521,16 +3553,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7fc03234cb7924fbbee5de1dbadd55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levels: 4
-  shadowThreshold: 0.5
-  shadowSmoothness: 0.057
-  outlineThickness: 3.11
-  outlineColor:
-    r: 0
-    g: 0
-    b: 0
-    a: 1
-  material: {fileID: 0}
 --- !u!1 &464752193
 GameObject:
   m_ObjectHideFlags: 0
@@ -5111,9 +5133,11 @@ GameObject:
   m_Component:
   - component: {fileID: 780423087}
   - component: {fileID: 780423086}
-  - component: {fileID: 780423089}
+  - component: {fileID: 780423094}
   - component: {fileID: 780423091}
   - component: {fileID: 780423090}
+  - component: {fileID: 780423095}
+  - component: {fileID: 780423089}
   - component: {fileID: 780423093}
   m_Layer: 0
   m_Name: Player
@@ -5235,7 +5259,7 @@ MonoBehaviour:
   spriteTransform: {fileID: 0}
   moveSpeed: 10
   acceleration: 25
-  decceleration: 25
+  decceleration: 35
 --- !u!114 &780423091
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5272,6 +5296,38 @@ CapsuleCollider:
   m_Height: 0.7253698
   m_Direction: 1
   m_Center: {x: 0, y: 0.008155882, z: 0}
+--- !u!114 &780423094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 780423085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dbc98c4b74b62d429365463156d1152, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &780423095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 780423085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f7611d9db98379468ded078da83d36b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerController: {fileID: 0}
+  playerInput: {fileID: 0}
+  weaponAimingLogic: {fileID: 0}
+  skillSlots:
+  - skillDefinition: {fileID: 11400000, guid: 7ce8091abc6230e40a33bac2299e3292, type: 2}
+  - skillDefinition: {fileID: 11400000, guid: 8d9d1c2f2dcf5ad4aa1f572a1a72447f, type: 2}
+  - skillDefinition: {fileID: 11400000, guid: 7ce8091abc6230e40a33bac2299e3292, type: 2}
+  - skillDefinition: {fileID: 11400000, guid: 8d9d1c2f2dcf5ad4aa1f572a1a72447f, type: 2}
 --- !u!1 &881109820
 GameObject:
   m_ObjectHideFlags: 0
@@ -5810,12 +5866,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1190384916}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 421683866}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1226153901
 PrefabInstance:
@@ -9952,7 +10008,6 @@ SceneRoots:
   - {fileID: 621039183}
   - {fileID: 91429463}
   - {fileID: 780423087}
-  - {fileID: 1190384918}
   - {fileID: 434282051}
   - {fileID: 1644210438}
   - {fileID: 109901095}
@@ -9977,3 +10032,4 @@ SceneRoots:
   - {fileID: 1454905020}
   - {fileID: 937263820}
   - {fileID: 890740051}
+  - {fileID: 421683866}

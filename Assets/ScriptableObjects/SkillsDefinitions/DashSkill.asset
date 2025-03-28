@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b177de65000d347409c1aa0c04fcdb88, type: 3}
+  m_Name: DashSkill
+  m_EditorClassIdentifier: 
+  skillName: Dash
+  skillIcon: {fileID: 0}
+  description: Performs a dash
+  cooldown: 3
+  producedEffectTypes: 
+  effectIntensity: 0
+  effectDuration: 0.5
+  skillPrefab: {fileID: 4322673740857458356, guid: c198bd61268de644ba86371a0e4c77d9, type: 3}
+  activationEffect: {fileID: 0}
+  activationSound: {fileID: 0}
+  staticBehaviour: 0
+  dashDistance: 5
+  dashSpeed: 30
+  providesInvulnerability: 1

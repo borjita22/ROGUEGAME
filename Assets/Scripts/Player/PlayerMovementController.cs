@@ -49,4 +49,9 @@ public class PlayerMovementController : MonoBehaviour
 
         rb.linearVelocity = currentVelocity;
 	}
+
+    public Vector3 GetMovementDirection()
+	{
+        return rb.linearVelocity;
+	}
 }

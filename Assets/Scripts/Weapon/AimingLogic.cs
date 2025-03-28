@@ -146,7 +146,7 @@ public class AimingLogic : MonoBehaviour
             // Solo actualizar si hay una entrada significativa
             if (stickInput.sqrMagnitude > 0.1f)
             {
-                Debug.Log("Stick input: " + stickInput);
+                //Debug.Log("Stick input: " + stickInput);
 
                 // Actualizar la dirección de apuntado
                 aimDirection = stickInput.normalized;
@@ -188,7 +188,7 @@ public class AimingLogic : MonoBehaviour
             currentVerticalAngle = Mathf.Clamp(currentVerticalAngle, minVerticalAngle, maxVerticalAngle);
 		}
 
-        Debug.Log("Current vertical angle " + currentVerticalAngle);
+        //Debug.Log("Current vertical angle " + currentVerticalAngle);
 	}
 
     //Settea la rotacion vertical del arma a 0 para centrarla
@@ -308,7 +308,7 @@ public class AimingLogic : MonoBehaviour
 	}
 
     /// <summary>
-    /// Obtiene la dirección actual de apuntado (útil para otros sistemas como el disparo)
+    /// Obtiene la dirección actual de apuntado (útil para otros sistemas como el disparo) OJO, quizas nos interesa obtener el vector forward del muzzle del cañon, ya que esto indica en la direccion en la que esta apuntando el arma
     /// </summary>
     public Vector2 GetAimDirection()
     {
