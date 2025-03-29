@@ -25,8 +25,9 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 	private InputAction useSkillX_Action;
 	private InputAction useSkillY_Action;
 
+	//Interaction related actions
+	private InputAction interactAction;
 
-	private bool usingGamepad = false;
 
 	public Vector2 MovementInput => movementAction.ReadValue<Vector2>();
 
@@ -43,9 +44,8 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 			Vector2 rawInput = aimingAction.ReadValue<Vector2>();
 
 			// Verificar si estamos usando gamepad
-			if (Gamepad.current != null && Gamepad.current.wasUpdatedThisFrame)
+			if (InputDeviceManager.Instance.IsUsingGamepad)
 			{
-				usingGamepad = true;
 				// Para el gamepad, aplicar una zona muerta para evitar drift
 				if (rawInput.sqrMagnitude < 0.1f)
 					return Vector2.zero;
@@ -53,19 +53,15 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 				// Devolver el input normalizado del stick
 				return rawInput.normalized;
 			}
-			else if (Mouse.current != null && Mouse.current.wasUpdatedThisFrame)
+			else
 			{
-				usingGamepad = false;
 				// Para el ratón, devolver la posición tal cual
 				return rawInput;
 			}
-
-			// Si no podemos determinar, devolver la entrada tal cual
-			return rawInput;
 		}
 	}
 
-	public bool IsUsingGamepad => usingGamepad;
+	public bool IsUsingGamepad => InputDeviceManager.Instance.IsUsingGamepad;
 
 
 	public bool isAttacking { get; private set; }
@@ -83,6 +79,8 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 
 	public delegate void OnUseGamepadSkill(int index);
 	public event OnUseGamepadSkill _OnUseGamepadSkill;
+
+	public event Action OnInteract;
 
 	
 
@@ -108,6 +106,8 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		useSkillX_Action = playerInput.FindActionMap("Skills").FindAction("UseSkillX");
 		useSkillY_Action = playerInput.FindActionMap("Skills").FindAction("UseSkillY");
 
+		interactAction = playerInput.FindActionMap("Interaction").FindAction("Interact");
+
 		attackAction.performed += OnAttackPerformed;
 		resetVRotationAction.performed += OnResetVRotationPerformed;
 		weaponStatusAction.performed += SetWeaponStatus;
@@ -123,7 +123,32 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		useSkillX_Action.performed += ctx => OnUseSkillOnGamepad(2);
 		useSkillY_Action.performed += ctx => OnUseSkillOnGamepad(3);
 
+		interactAction.performed += ctx => OnInteract?.Invoke();
 
+
+		EnableInputActions();
+	}
+
+	private void OnEnable()
+	{
+		if(InputDeviceManager.Instance != null)
+		{
+			InputDeviceManager.Instance.OnInputDeviceChanged += OnInputDeviceChanged;
+		}
+	}
+
+	private void OnDisable()
+	{
+		if (InputDeviceManager.Instance != null)
+		{
+			InputDeviceManager.Instance.OnInputDeviceChanged += OnInputDeviceChanged;
+		}
+
+		DisableInputActions();
+	}
+
+	private void EnableInputActions()
+	{
 		movementAction.Enable();
 		aimingAction.Enable();
 		attackAction.Enable();
@@ -139,9 +164,11 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		useSkillB_Action.Enable();
 		useSkillX_Action.Enable();
 		useSkillY_Action.Enable();
+
+		interactAction.Enable();
 	}
 
-	private void OnDisable()
+	private void DisableInputActions()
 	{
 		movementAction?.Disable();
 		aimingAction?.Disable();
@@ -157,6 +184,13 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		useSkillB_Action.Disable();
 		useSkillX_Action.Disable();
 		useSkillY_Action.Disable();
+
+		interactAction.Disable();
+	}
+
+	private void OnInputDeviceChanged(InputDeviceType deviceType)
+	{
+		Debug.Log($"PlayerInputHandler: Dispositivo cambiado a {deviceType}");
 	}
 
 	private void OnAttackPerformed(InputAction.CallbackContext context)

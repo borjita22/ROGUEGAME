@@ -8,6 +8,7 @@ public interface ISkill
 
     bool IsExecuting { get; }
 
+    bool IsOnCooldown { get; }
     bool CanUse();
 
     void Use(Vector3 direction);

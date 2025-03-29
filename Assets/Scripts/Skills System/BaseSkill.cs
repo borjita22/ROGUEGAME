@@ -13,7 +13,11 @@ public abstract class BaseSkill : ISkill
 
 	public bool IsExecuting { get; protected set; }
 
+	public bool IsOnCooldown { get; protected set; }
+
 	protected PlayerController owner;
+
+
 
 	protected BaseSkill(SkillDefinition definition, PlayerController owner)
 	{
@@ -34,7 +38,15 @@ public abstract class BaseSkill : ISkill
 		if(RemainingCooldown > 0f)
 		{
 			Debug.Log("Updating skill cooldown");
+			if(IsOnCooldown == false)
+			{
+				IsOnCooldown = true;
+			}
 			RemainingCooldown -= deltaTime;
+		}
+		else
+		{
+			IsOnCooldown = false;
 		}
 	}
 
@@ -63,4 +75,6 @@ public abstract class BaseSkill : ISkill
 	}
 
 	public abstract void Cancel();
+
+	
 }

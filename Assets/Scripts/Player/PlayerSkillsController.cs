@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 
@@ -24,6 +25,9 @@ public class PlayerSkillsController : MonoBehaviour
 
 	[SerializeField] private SkillDefinition currentSelectedSkill;
 
+	public event Action<int, ISkill> OnSkillEquipped;
+	public event Action<int> OnSkillSelected;
+
 	private void OnEnable()
 	{
 		
@@ -31,9 +35,6 @@ public class PlayerSkillsController : MonoBehaviour
 
 	private void Awake()
 	{
-		
-        
-		
 		playerController = GetComponent<PlayerController>();
 		playerInput = GetComponent<PlayerInputHandler>();
 
@@ -100,6 +101,8 @@ public class PlayerSkillsController : MonoBehaviour
 		Debug.Log($"Skill switched to {selectedSkillIndex}");
 
 		currentSelectedSkill = skillSlots[selectedSkillIndex].skillDefinition;
+
+		OnSkillSelected?.Invoke(selectedSkillIndex);
 	}
 
 	private void PerformSkill()
@@ -147,6 +150,43 @@ public class PlayerSkillsController : MonoBehaviour
 		else
 		{
 			Debug.Log("Skill cannot be used while it´s on cooldown");
+		}
+	}
+
+	public ISkill GetSkillAtSlot(int index)
+	{
+		if(index >= 0 && index < MAX_SKILL_SLOTS)
+		{
+			return equippedSkills[index];
+		}
+		return null;
+	}
+
+	public void EquipSkill(SkillDefinition skillDef, int slotIndex)
+	{
+		if (slotIndex < 0 || slotIndex >= MAX_SKILL_SLOTS) return;
+
+		// Desequipar habilidad actual si existe
+		if (equippedSkills[slotIndex] != null)
+		{
+			//equippedSkills[slotIndex].OnUnequip(); // Asumiendo que implementaste este método
+		}
+
+		// Crear nueva instancia
+		ISkill newSkill = skillDef.CreateInstance(playerController);
+
+		// Equipar
+		skillSlots[slotIndex].skillDefinition = skillDef;
+		skillSlots[slotIndex].runtimeSkill = newSkill;
+		equippedSkills[slotIndex] = newSkill;
+
+		// Notificar
+		OnSkillEquipped?.Invoke(slotIndex, newSkill);
+
+		// Si es el slot seleccionado, actualizar referencia
+		if (slotIndex == selectedSkillIndex)
+		{
+			currentSelectedSkill = skillDef;
 		}
 	}
 }
