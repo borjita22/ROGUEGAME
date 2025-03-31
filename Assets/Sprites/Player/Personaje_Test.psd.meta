@@ -1,12 +1,5 @@
 fileFormatVersion: 2
-guid: 9d5b89b9b450d3b44939437c835dfc9c
-AssetOrigin:
-  serializedVersion: 1
-  productId: 85838
-  packageName: Free Platform Game Assets
-  packageVersion: 1.9.4
-  assetPath: Assets/BayatGames/Free Platform Game Assets/Environments/Environments/png/512x512/Environment.png
-  uploadId: 484258
+guid: 8f37c942d729c884a9da3ef37edd4d65
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -46,16 +39,16 @@ TextureImporter:
     mipBias: 0
     wrapU: 1
     wrapV: 1
-    wrapW: 1
+    wrapW: 0
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 200
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -70,16 +63,16 @@ TextureImporter:
   compressionQualitySet: 0
   textureFormatSet: 0
   ignorePngGamma: 0
-  applyGammaDecoding: 1
+  applyGammaDecoding: 0
   swizzle: 50462976
-  cookieLightType: 1
+  cookieLightType: 0
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -104,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Environment_0
+      name: Personaje_Test_0
       rect:
         serializedVersion: 2
-        x: 9
-        y: 231
-        width: 241
-        height: 256
+        x: 26
+        y: 890
+        width: 68
+        height: 99
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -119,20 +112,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6c474a4ec31ba1945a80ff86615e2593
-      internalID: 1931623157
+      spriteID: fd830cb10ae890e4b9035c45cabfaa36
+      internalID: 1025603312
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Environment_1
+      name: Personaje_Test_1
       rect:
         serializedVersion: 2
-        x: 275
-        y: 231
-        width: 221
-        height: 257
+        x: 160
+        y: 913
+        width: 67
+        height: 76
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,20 +134,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 01c1f93f0c7c09147b4e9bb1c8318a66
-      internalID: 2029415735
+      spriteID: ca8b7d54f5245ca4eba84fd9a96df779
+      internalID: -1083574657
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Environment_2
+      name: Personaje_Test_2
       rect:
         serializedVersion: 2
-        x: 28
-        y: 150
-        width: 79
-        height: 41
+        x: 361
+        y: 928
+        width: 64
+        height: 54
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -163,19 +156,41 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f1b66acf7b3a30b4994e85323abefcc0
-      internalID: 1947809866
+      spriteID: 85e76a9d41ffce3419400e7d96815315
+      internalID: -1735362592
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Environment_3
+      name: Personaje_Test_3
       rect:
         serializedVersion: 2
-        x: 199
-        y: 132
-        width: 85
+        x: 559
+        y: 929
+        width: 74
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 044bfcea2e1c26f44a05302cf626fd49
+      internalID: 415242345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Personaje_Test_4
+      rect:
+        serializedVersion: 2
+        x: 800
+        y: 929
+        width: 74
         height: 57
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -185,20 +200,108 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f58557cc52003e74daea508881258793
-      internalID: -626704977
+      spriteID: 30f4b64de063dcd49a7b7096a618030d
+      internalID: -603896090
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Environment_4
+      name: Personaje_Test_5
       rect:
         serializedVersion: 2
-        x: 404
-        y: 152
+        x: 9
+        y: 554
+        width: 408
+        height: 310
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a44da06ee3904344fac31fe0bf6f3195
+      internalID: 177253500
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Personaje_Test_6
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 618
+        width: 193
+        height: 255
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 86f985b553114d640bec4a2c292539df
+      internalID: 1534381127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Personaje_Test_7
+      rect:
+        serializedVersion: 2
+        x: 697
+        y: 708
+        width: 203
+        height: 175
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d2ecbcb2c5c328643a39ae2156feaed3
+      internalID: 1251204719
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Personaje_Test_8
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 603
+        width: 79
+        height: 89
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 16db076b12f767b489fc27f03f3287b0
+      internalID: 841582727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Personaje_Test_9
+      rect:
+        serializedVersion: 2
+        x: 878
+        y: 621
         width: 75
-        height: 37
+        height: 56
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -207,20 +310,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a0e63148f34d7ef41ada2993dd2495f3
-      internalID: 1764188805
+      spriteID: 8ae636f2d41ff274b880e0d5ae72a515
+      internalID: 961425512
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Environment_5
+      name: Personaje_Test_10
       rect:
         serializedVersion: 2
-        x: 45
-        y: 88
-        width: 9
-        height: 17
+        x: 47
+        y: 413
+        width: 84
+        height: 104
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -229,20 +332,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 877ff56a3b0ddbb4a849b0638a7df147
-      internalID: -1853463991
+      spriteID: 562778a99f7bd27439e392ac137e4cf3
+      internalID: 2041392222
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Environment_6
+      name: Personaje_Test_11
       rect:
         serializedVersion: 2
-        x: 54
-        y: 87
-        width: 9
-        height: 23
+        x: 284
+        y: 397
+        width: 47
+        height: 153
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -251,108 +354,218 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a5d14cbb09c76024e9814049f510b4a6
-      internalID: 1551233771
+      spriteID: 3e47d93bc76a027408135d443ff3a3a0
+      internalID: 2129946944
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Environment_7
+      name: Personaje_Test_12
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 317
+        width: 265
+        height: 286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 64bf21a463343b84f9bb41e75e984ffd
+      internalID: -437881986
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Personaje_Test_13
+      rect:
+        serializedVersion: 2
+        x: 729
+        y: 499
+        width: 67
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 43b0d3e55d734414599168d884f75ec2
+      internalID: -863345216
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Personaje_Test_14
+      rect:
+        serializedVersion: 2
+        x: 758
+        y: 401
+        width: 52
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 126d48eb5dcaf0e4a88a44231a700e7e
+      internalID: -101376181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Personaje_Test_15
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 316
+        width: 53
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 17c4dc5ed5694b3469c74cd630226d4f
+      internalID: -835169795
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Personaje_Test_16
+      rect:
+        serializedVersion: 2
+        x: 279
+        y: 257
+        width: 58
+        height: 116
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1dd7343db4e126645bba3d14d26cebf3
+      internalID: 50725186
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Personaje_Test_17
+      rect:
+        serializedVersion: 2
+        x: 702
+        y: 271
+        width: 291
+        height: 115
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b92795a9d127b9c4f8ffff126020b030
+      internalID: 1220248919
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Personaje_Test_18
+      rect:
+        serializedVersion: 2
+        x: 75
+        y: 229
+        width: 57
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 990d543983f662a41aa8f55d1a6353b9
+      internalID: -1839345223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Personaje_Test_19
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 107
+        width: 110
+        height: 138
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fcfba544f5a20694182202cbf5405611
+      internalID: 1567704982
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Personaje_Test_20
+      rect:
+        serializedVersion: 2
+        x: 408
+        y: 134
+        width: 156
+        height: 100
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 945cba8e280efe040b6cf6117ab331b5
+      internalID: 1742806552
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Personaje_Test_21
       rect:
         serializedVersion: 2
         x: 62
-        y: 87
-        width: 6
-        height: 21
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 28909958d792070499446f777fc2d25c
-      internalID: 1712480461
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Environment_8
-      rect:
-        serializedVersion: 2
-        x: 69
-        y: 88
-        width: 5
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c25795e55fd6d2b4ba0f49f1deccfb92
-      internalID: -314389141
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Environment_9
-      rect:
-        serializedVersion: 2
-        x: 133
-        y: 85
-        width: 40
-        height: 33
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: eccb82172dc5804419f61a5c1ee2ee33
-      internalID: 1277006176
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Environment_10
-      rect:
-        serializedVersion: 2
-        x: 229
-        y: 88
-        width: 25
-        height: 22
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0e9603b206af15949a91d1ee70c8f56c
-      internalID: 5679378
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Environment_11
-      rect:
-        serializedVersion: 2
-        x: 322
         y: 84
-        width: 37
-        height: 29
+        width: 72
+        height: 77
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -361,20 +574,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2cb0687734046904e902ae20adbd4438
-      internalID: 360821829
+      spriteID: 50daeec6e17835a40b96e32671c9b817
+      internalID: 909541008
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Environment_12
+      name: Personaje_Test_22
       rect:
         serializedVersion: 2
-        x: 406
-        y: 80
-        width: 40
-        height: 38
+        x: 612
+        y: 53
+        width: 110
+        height: 133
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -383,20 +596,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 072b201e0fdaeac4cbd0ef45457e2fde
-      internalID: -124896872
+      spriteID: 079cc765547e5384e93bf6634e7c3bd6
+      internalID: 871180487
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Environment_13
+      name: Personaje_Test_23
       rect:
         serializedVersion: 2
-        x: 94
-        y: 18
-        width: 7
-        height: 13
+        x: 806
+        y: 60
+        width: 156
+        height: 101
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -405,184 +618,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fce2afdcf5c3fa64695a36ef405ab2a7
-      internalID: -316590858
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Environment_14
-      rect:
-        serializedVersion: 2
-        x: 102
-        y: 20
-        width: 13
-        height: 17
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 1a1d7d99ebaad154c9334f5330663ef0
-      internalID: 1028348012
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Environment_15
-      rect:
-        serializedVersion: 2
-        x: 171
-        y: 18
-        width: 4
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2fce65bbdc9ad654dad3fac4f55e47a9
-      internalID: -748280287
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Environment_16
-      rect:
-        serializedVersion: 2
-        x: 174
-        y: 19
-        width: 7
-        height: 17
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e468d4b2e0e761a4bb0ee92dd21c80b1
-      internalID: -1678356630
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Environment_17
-      rect:
-        serializedVersion: 2
-        x: 181
-        y: 16
-        width: 11
-        height: 26
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 03f431e7de6671b45861f084be035f5b
-      internalID: 686299687
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Environment_18
-      rect:
-        serializedVersion: 2
-        x: 190
-        y: 17
-        width: 7
-        height: 22
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 49c01ed97eaffc24d99438b6817db232
-      internalID: 432820810
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Environment_19
-      rect:
-        serializedVersion: 2
-        x: 198
-        y: 18
-        width: 6
-        height: 12
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: fe0664f7ef954b247bd4871133e9fee8
-      internalID: -1629218811
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Environment_20
-      rect:
-        serializedVersion: 2
-        x: 276
-        y: 20
-        width: 26
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 723805cd9f5fdf04e9143b77616de500
-      internalID: 2131763746
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Environment_21
-      rect:
-        serializedVersion: 2
-        x: 371
-        y: 14
-        width: 37
-        height: 34
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ca9bf71bb7f76a3409b13d46e1aedd4d
-      internalID: 1320963601
+      spriteID: 3a376770aaa28064c8e01ce579f088bd
+      internalID: 1976304086
       vertices: []
       indices: 
       edges: []
@@ -591,7 +628,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 1378aad1023f55f40b8a30c7974562bc
+    spriteID: 52c5553ee36024a49a53d260126b81d9
     internalID: 0
     vertices: []
     indices: 
@@ -601,28 +638,30 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Environment_0: 1931623157
-      Environment_1: 2029415735
-      Environment_10: 5679378
-      Environment_11: 360821829
-      Environment_12: -124896872
-      Environment_13: -316590858
-      Environment_14: 1028348012
-      Environment_15: -748280287
-      Environment_16: -1678356630
-      Environment_17: 686299687
-      Environment_18: 432820810
-      Environment_19: -1629218811
-      Environment_2: 1947809866
-      Environment_20: 2131763746
-      Environment_21: 1320963601
-      Environment_3: -626704977
-      Environment_4: 1764188805
-      Environment_5: -1853463991
-      Environment_6: 1551233771
-      Environment_7: 1712480461
-      Environment_8: -314389141
-      Environment_9: 1277006176
+      Personaje_Test_0: 1025603312
+      Personaje_Test_1: -1083574657
+      Personaje_Test_10: 2041392222
+      Personaje_Test_11: 2129946944
+      Personaje_Test_12: -437881986
+      Personaje_Test_13: -863345216
+      Personaje_Test_14: -101376181
+      Personaje_Test_15: -835169795
+      Personaje_Test_16: 50725186
+      Personaje_Test_17: 1220248919
+      Personaje_Test_18: -1839345223
+      Personaje_Test_19: 1567704982
+      Personaje_Test_2: -1735362592
+      Personaje_Test_20: 1742806552
+      Personaje_Test_21: 909541008
+      Personaje_Test_22: 871180487
+      Personaje_Test_23: 1976304086
+      Personaje_Test_3: 415242345
+      Personaje_Test_4: -603896090
+      Personaje_Test_5: 177253500
+      Personaje_Test_6: 1534381127
+      Personaje_Test_7: 1251204719
+      Personaje_Test_8: 841582727
+      Personaje_Test_9: 961425512
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
