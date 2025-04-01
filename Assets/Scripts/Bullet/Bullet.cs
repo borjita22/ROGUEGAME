@@ -48,7 +48,7 @@ public class Bullet : MonoBehaviour
 
         if(rb != null)
 		{
-            rb.linearVelocity = normalizedDirection * bulletSpeed;
+            rb.velocity = normalizedDirection * bulletSpeed;
 		}
 
         transform.forward = normalizedDirection;

@@ -45,13 +45,13 @@ public class PlayerMovementController : MonoBehaviour
         currentVelocity.x = Mathf.MoveTowards(currentVelocity.x, targetVelocity.x, smoothFactor * Time.fixedDeltaTime);
         currentVelocity.z = Mathf.MoveTowards(currentVelocity.z, targetVelocity.z, smoothFactor * Time.fixedDeltaTime);
 
-        currentVelocity.y = rb.linearVelocity.y;
+        currentVelocity.y = rb.velocity.y;
 
-        rb.linearVelocity = currentVelocity;
+        rb.velocity = currentVelocity;
 	}
 
     public Vector3 GetMovementDirection()
 	{
-        return rb.linearVelocity;
+        return rb.velocity;
 	}
 }

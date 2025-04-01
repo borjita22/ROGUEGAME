@@ -2,13 +2,14 @@ using UnityEngine;
 
 public abstract class SkillDefinition : ScriptableObject
 {
+
     [Header("Skill info")]
     public string skillName;
     public Sprite skillIcon;
     [TextArea(2, 5)]
     public string description;
 
-    [Header("Gameplay settings")]
+    
     public abstract SkillType SkillType { get; }
     public float cooldown;
 
