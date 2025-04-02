@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        movementDirection = movementController.GetMovementDirection();
+        movementDirection = movementController.GetCurrentVelocity();
     }
 
     public PlayerInputHandler GetPlayerInputHandler()
