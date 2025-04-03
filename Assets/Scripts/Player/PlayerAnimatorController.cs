@@ -6,11 +6,28 @@ public class PlayerAnimatorController : MonoBehaviour
 {
     private Animator animator;
     private PlayerMovementController movementController;
+	private PlayerInputHandler inputHandler;
 
 	private void Awake()
 	{
         movementController = GetComponent<PlayerMovementController>();
+		inputHandler = GetComponent<PlayerInputHandler>();
 		animator = GetComponent<Animator>();
+	}
+
+	// Start is called before the first frame update
+	void Start()
+	{
+		if (movementController)
+		{
+			movementController.OnVelocityChanged += HandleVelocityChange;
+		}
+
+		if (inputHandler)
+		{
+			inputHandler.OnHealthRecover += DisplayHealthRecoveryAnimation;
+			inputHandler.OnManaRecover += DisplayManaRecoveryAnimation;
+		}
 	}
 
 	private void OnDisable()
@@ -19,22 +36,13 @@ public class PlayerAnimatorController : MonoBehaviour
 		{
 			movementController.OnVelocityChanged -= HandleVelocityChange;
 		}
-	}
 
-	// Start is called before the first frame update
-	void Start()
-    {
-        if(movementController)
+		if (inputHandler)
 		{
-			movementController.OnVelocityChanged += HandleVelocityChange;
+			inputHandler.OnHealthRecover -= DisplayHealthRecoveryAnimation;
+			inputHandler.OnManaRecover -= DisplayManaRecoveryAnimation;
 		}
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+	}
 
     private void HandleVelocityChange(Vector3 currentVelocity)
 	{
@@ -45,6 +53,22 @@ public class PlayerAnimatorController : MonoBehaviour
 			animator.SetFloat("Velocity", speed);
 
 			Debug.Log("Animator velocity: " + animator.GetFloat("Velocity"));
+		}
+	}
+
+	private void DisplayHealthRecoveryAnimation()
+	{
+		if(animator)
+		{
+			animator.SetTrigger("HealthRecovery");
+		}
+	}
+
+	private void DisplayManaRecoveryAnimation()
+	{
+		if (animator)
+		{
+			animator.SetTrigger("ManaRecovery");
 		}
 	}
 }

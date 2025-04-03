@@ -28,6 +28,9 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 	//Interaction related actions
 	private InputAction interactAction;
 
+	private InputAction healthRecoverAction;
+	private InputAction manaRecoverAction;
+
 
 	public Vector2 MovementInput => movementAction.ReadValue<Vector2>();
 
@@ -82,6 +85,10 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 
 	public event Action OnInteract;
 
+	//Luego estos inputs van a necesitar un parametro que determine la cantidad de salud/mana que van a permitir recuperar, y que se le pasara al controlador principal del jugador, que sera
+	//quien tenga acceso a la cantidad de salud y mana del jugador
+	public event Action OnHealthRecover; 
+	public event Action OnManaRecover;
 	
 
 
@@ -107,6 +114,8 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		useSkillY_Action = playerInput.FindActionMap("Skills").FindAction("UseSkillY");
 
 		interactAction = playerInput.FindActionMap("Interaction").FindAction("Interact");
+		healthRecoverAction = playerInput.FindActionMap("Interaction").FindAction("HealthRecover");
+		manaRecoverAction = playerInput.FindActionMap("Interaction").FindAction("ManaRecover");
 
 		attackAction.performed += OnAttackPerformed;
 		resetVRotationAction.performed += OnResetVRotationPerformed;
@@ -124,6 +133,8 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		useSkillY_Action.performed += ctx => OnUseSkillOnGamepad(3);
 
 		interactAction.performed += ctx => OnInteract?.Invoke();
+		healthRecoverAction.performed += ctx => OnHealthRecover?.Invoke();
+		manaRecoverAction.performed += ctx => OnManaRecover?.Invoke();
 
 
 		EnableInputActions();
@@ -147,6 +158,8 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		DisableInputActions();
 	}
 
+	//Luego esto va a haber que dividirlo en diferentes tipos de input, por si solamente se quisiesen habilitar o deshabilitar determinados tipos
+	//Por ejemplo, mientras estas cargando con algun objeto como una caja, no vas a poder disparar o curarte salud ni mana
 	private void EnableInputActions()
 	{
 		movementAction.Enable();
@@ -166,6 +179,8 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		useSkillY_Action.Enable();
 
 		interactAction.Enable();
+		healthRecoverAction.Enable();
+		manaRecoverAction.Enable();
 	}
 
 	private void DisableInputActions()
@@ -186,6 +201,8 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		useSkillY_Action.Disable();
 
 		interactAction.Disable();
+		healthRecoverAction.Disable();
+		manaRecoverAction.Disable();
 	}
 
 	private void OnInputDeviceChanged(InputDeviceType deviceType)

@@ -41,6 +41,9 @@ public class AimingLogic : MonoBehaviour
     [SerializeField] private Transform weaponMuzzle;
     private LineRenderer aimingLine;
 
+    private int projectileLayer;
+    int aimingLineLayerMask;
+
 
     private void Awake()
 	{
@@ -82,6 +85,10 @@ public class AimingLogic : MonoBehaviour
             enabled = false;
             return;
         }
+
+        projectileLayer = LayerMask.NameToLayer("Projectile");
+        aimingLineLayerMask = ~0;
+        aimingLineLayerMask &= ~(1 << projectileLayer);
     }
 
 	private void Update()
@@ -289,7 +296,8 @@ public class AimingLogic : MonoBehaviour
         aimingLine.SetPosition(0, weaponMuzzle.transform.position);
         aimingLine.SetPosition(1, weaponMuzzle.transform.position + (weaponMuzzle.transform.forward * 10f)); //esto luego sera dependiente del alcance del arma
         */
-        bool _hit = Physics.Raycast(weaponMuzzle.transform.position, transform.forward, out RaycastHit hit, 10f);
+        //El laser de apuntado tiene que ignorar las propias balas del jugador
+        bool _hit = Physics.Raycast(weaponMuzzle.transform.position, weaponMuzzle.transform.forward, out RaycastHit hit, 10f, aimingLineLayerMask);
 
         if(_hit)
 		{

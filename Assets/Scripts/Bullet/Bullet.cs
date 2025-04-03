@@ -12,10 +12,16 @@ public class Bullet : MonoBehaviour
 
     private Coroutine timeAliveCoroutine;
 
+    private PoolableObject poolableComponent;
+
+    private ObjectPool bulletImpactEffectPool;
+
 	private void Awake()
 	{
         rb = GetComponent<Rigidbody>();
+        bulletImpactEffectPool = GameObject.Find("BulletImpactEffectPool").GetComponent<ObjectPool>();
 	}
+
 
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
@@ -33,6 +39,9 @@ public class Bullet : MonoBehaviour
 	{
         //nada mas se active la bala hay que ejecutar una corutina que espera el tiempo de vida
         //de la bala para devolverla a la pool de objetos
+        //Esto tengo que hacerlo aqui, o bien añadir el componente por inspector
+        poolableComponent = GetComponent<PoolableObject>();
+
         if (timeAliveCoroutine != null)
         {
             StopCoroutine(timeAliveCoroutine);
@@ -54,11 +63,12 @@ public class Bullet : MonoBehaviour
         transform.forward = normalizedDirection;
 	}
 
+    //Esta funcionalidad podria ir en un script independiente que pueda ajustar el tiempo de vida del objeto
     private IEnumerator DestroyBulletByTime()
 	{
         yield return new WaitForSeconds(timeAlive);
 
-        PoolableObject poolableComponent = this.GetComponent<PoolableObject>();
+        //PoolableObject poolableComponent = this.GetComponent<PoolableObject>();
 
         if(poolableComponent)
 		{
@@ -72,13 +82,31 @@ public class Bullet : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if(other.CompareTag("Collider"))
-		{
-            Debug.Log("Bullet collides");
-		}
-        else if(other.TryGetComponent<EnemyController>(out var enemy))
+		if(other.TryGetComponent<EnemyController>(out var enemy))
 		{
             enemy.TakeDamage(10f);
 		}
-	}
+
+        if(bulletImpactEffectPool)
+		{
+            Vector3 collisionPoint = other.ClosestPoint(this.transform.position);
+
+            GameObject impactEffect = bulletImpactEffectPool.GetObject();
+
+            if(impactEffect)
+			{
+                impactEffect.transform.position = collisionPoint;
+
+                Vector3 impactDirection = collisionPoint - transform.position;
+
+                impactEffect.transform.rotation = Quaternion.LookRotation(impactDirection);
+            }
+		}
+
+        if (poolableComponent)
+        {
+            poolableComponent.ReturnToPool();
+        }
+
+    }
 }

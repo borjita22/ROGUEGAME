@@ -113,12 +113,12 @@ public class PlayerMovementController : MonoBehaviour
 
     private void ManageCharacterOrientation()
 	{
-        if(currentVelocity.x < -0.1f && isFacingRight)
+        if(currentVelocity.x < -0.15f && isFacingRight)
 		{
             this.transform.localScale = new Vector3(-1f, 1f, 1f);
             isFacingRight = false;
 		}
-        else if(currentVelocity.x > 0.1f && !isFacingRight)
+        else if(currentVelocity.x > 0.15f && !isFacingRight)
 		{
             this.transform.localScale = new Vector3(1f, 1f, 1f);
             isFacingRight = true;
