@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.VFX;
 
 //Clase que representa una bala del jugador
 public class Bullet : MonoBehaviour
@@ -86,6 +87,42 @@ public class Bullet : MonoBehaviour
 		{
             enemy.TakeDamage(10f);
 		}
+  //      else if(other.GetComponent<InteractableEntity>()) //Para pruebas, luego esto lo gestiona cada propio objeto de manera individual
+		//{
+  //          ObjectPool fireEffectPool = GameObject.Find("FireEffectPool").GetComponent<ObjectPool>();
+
+  //          GameObject vfxInstance = fireEffectPool.GetObject();
+
+  //          if(vfxInstance)
+		//	{
+  //              VisualEffect vfx = vfxInstance.GetComponent<VisualEffect>();
+
+  //              if(vfx)
+		//		{
+  //                  if(other is BoxCollider)
+		//			{
+  //                      vfx.SetBool("IsSphereCollider", false);
+  //                      Vector3 size = new Vector3(
+  //                              ((BoxCollider)other).size.x * other.transform.lossyScale.x,
+  //                              ((BoxCollider)other).size.y * other.transform.lossyScale.y,
+  //                              ((BoxCollider)other).size.z * other.transform.lossyScale.z
+  //                          );
+  //                      vfx.SetVector3("BoxSize", size);
+		//			}
+  //                  else
+		//			{
+  //                      vfx.SetBool("IsSphereCollider", true);
+  //                      float radius = ((SphereCollider)other).radius * Mathf.Max(
+  //                       other.transform.lossyScale.x,
+  //                       other.transform.lossyScale.y,
+  //                       other.transform.lossyScale.z
+  //          );
+  //                      vfx.SetFloat("SphereRadius", radius);
+  //                  }
+		//		}
+		//	}
+  //          vfxInstance.transform.position = other.transform.position;
+		//}
 
         if(bulletImpactEffectPool)
 		{

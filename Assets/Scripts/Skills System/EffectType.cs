@@ -5,5 +5,6 @@ public enum EffectType
 	Fire,
 	Ice,
 	Poison,
-	Bleed
+	Bleed,
+	Electric
 }

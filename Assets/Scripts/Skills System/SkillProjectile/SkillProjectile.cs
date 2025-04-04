@@ -14,6 +14,8 @@ public class SkillProjectile : MonoBehaviour
 
     private Rigidbody rb;
 
+	public bool IsConsumedOnInteraction => throw new System.NotImplementedException();
+
 	private void Awake()
 	{
 		rb = GetComponent<Rigidbody>();
@@ -46,4 +48,20 @@ public class SkillProjectile : MonoBehaviour
 			rb.MovePosition(nextPosition);
 		}
 	}
+
+	//Al entrar en el trigger, comprueban si un objeto es interactuable
+	private void OnTriggerEnter(Collider other)
+	{
+		IEffectable effectable = other.GetComponent<IEffectable>();
+
+		if(effectable != null)
+		{
+			foreach(EffectType effectType in producedEffectTypes)
+			{
+				effectable.ApplyEffect(effectType); //Quizas la duracion sea super innecesaria, ya que se saldria de los diferentes efectos de estado mediante interaccion y aplicacion de otros efectos de estado diferentes. Por ejemplo, el aplicar hielo a un objeto quemado hace que deje de estar quemado
+			}
+		}
+	}
+
+
 }

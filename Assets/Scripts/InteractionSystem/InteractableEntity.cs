@@ -2,7 +2,7 @@ using UnityEngine;
 
 
 //Ojo, posteriormente esta clase no va a implementar otra interfaz que no sea IInteractable, y ademas no va a definir aqui los metodos, sino que cada tipo de interactable redefinira el comportamiento de sus metodos asociados
-public class InteractableEntity : MonoBehaviour, IInteractable, IPickable
+public class InteractableEntity : MonoBehaviour, IInteractable
 {
 	[SerializeField] private bool consumedOnInteraction = false;
 
@@ -14,22 +14,10 @@ public class InteractableEntity : MonoBehaviour, IInteractable, IPickable
 		Debug.Log("Soy un objeto interactuable que esta cerca del jugador");
 	}
 
-	public void PickUp(Transform parent)
-	{
-		//Colocar este objeto como hijo del transform pasado como parametro
-		this.transform.SetParent(parent);
-		this.transform.position = parent.position;
-	}
-
-
-	public void Drop()
-	{
-		this.transform.SetParent(null);
-	}
-
+	//Este metodo sera refactorizado eventualmente en otras clases hijas
 	public bool CanInteractWith(IInteractable other)
 	{
-		return other is IInteractable; //Esto sera asi por el momento, luego cada subclase implementara lo suyo propio
+		return other is IInteractable;
 	}
 
 	public void InteractWith(IInteractable other)
@@ -37,20 +25,15 @@ public class InteractableEntity : MonoBehaviour, IInteractable, IPickable
 		Debug.Log($"Interaccion recibida de {other}");
 
 		//De momento llamamos al metodo receiveInteraction
-		ReceiveInteraction(other);
+		other.ReceiveInteraction(this);
 	}
 
-	public void ReceiveInteraction(IInteractable from)
+
+	public virtual void ReceiveInteraction(IInteractable from)
 	{
-
-		//Metodo de prueba para ver si el objeto puede recibir el color del objeto que interactua con el
-		GameObject otherObj = ((MonoBehaviour)from).gameObject;
-
-		SpriteRenderer spRenderer = this.GetComponent<SpriteRenderer>();
-
-		if(spRenderer)
-		{
-			otherObj.GetComponent<SpriteRenderer>().color = spRenderer.color;
-		}
+		//AQUI HAY QUE RECIBIR LA INTERACCION DE OTRO OBJETO. ESTO PUEDE VARIAR MUCHO DEPENDIENDO DEL TIPO DE OBJETO, POR LO QUE SEGURAMENTE SE REDEFINIRA EN LAS CLASES
+		//HIJAS DE ESTE OBJETO
+		
+		
 	}
 }
