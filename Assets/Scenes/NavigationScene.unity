@@ -278,7 +278,7 @@ Transform:
   m_GameObject: {fileID: 91429461}
   serializedVersion: 2
   m_LocalRotation: {x: 0.13829033, y: -0, z: -0, w: 0.99039173}
-  m_LocalPosition: {x: -2.24, y: 7.561274, z: 1.3383827}
+  m_LocalPosition: {x: -0.934, y: 7.561274, z: 1.3383827}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -670,6 +670,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a8c10b906389f046a2cda5642a75950, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &112328287
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 112328288}
+  m_Layer: 6
+  m_Name: LightPickableSlot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &112328288
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 112328287}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4436574676087913268}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &259046161
 GameObject:
   m_ObjectHideFlags: 0
@@ -1173,7 +1204,7 @@ Transform:
   m_GameObject: {fileID: 447789078}
   serializedVersion: 2
   m_LocalRotation: {x: 0.13829033, y: 0, z: 0, w: 0.99039173}
-  m_LocalPosition: {x: -2.24, y: 7.561274, z: 1.3383827}
+  m_LocalPosition: {x: -0.934, y: 7.561274, z: 1.3383827}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1940,7 +1971,7 @@ Transform:
   m_GameObject: {fileID: 780423085}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.24, y: 1.222, z: 14.933}
+  m_LocalPosition: {x: -0.934, y: 1.222, z: 14.933}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2100,7 +2131,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40f3db7b147708b408aa2a48488ab031, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickableElementSlot: {fileID: 2132141791}
+  heavyPickableElementSlot: {fileID: 2132141791}
+  lightPickableElementSlot: {fileID: 112328288}
 --- !u!136 &780423097
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2120,7 +2152,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.80388
+  m_Radius: 1.36
   m_Height: 1.8440034
   m_Direction: 1
   m_Center: {x: -0.008289576, y: 0.11812174, z: 0}
@@ -6986,7 +7018,8 @@ Transform:
   m_LocalPosition: {x: 0.162, y: 0.013, z: -0.007}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 112328288}
   m_Father: {fileID: 698316796840623846}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4461140696435751744

@@ -5,7 +5,13 @@ using UnityEngine.VFX;
 
 public class Box : EffectableObject, IPickable
 {
+	[SerializeField] public PickableWeight weight  { get; protected set; }
 
+	protected override void Awake()
+	{
+		base.Awake();
+		weight = PickableWeight.Heavy;
+	}
 	public void PickUp(Transform parent)
 	{
 		//Colocar este objeto como hijo del transform pasado como parametro

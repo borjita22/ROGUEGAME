@@ -6,11 +6,13 @@ public class PlayerAnimatorController : MonoBehaviour
 {
     private Animator animator;
     private PlayerMovementController movementController;
+	private PlayerInteractionsController interactionsController;
 	private PlayerInputHandler inputHandler;
 
 	private void Awake()
 	{
         movementController = GetComponent<PlayerMovementController>();
+		interactionsController = GetComponent<PlayerInteractionsController>();
 		inputHandler = GetComponent<PlayerInputHandler>();
 		animator = GetComponent<Animator>();
 	}
@@ -28,6 +30,12 @@ public class PlayerAnimatorController : MonoBehaviour
 			inputHandler.OnHealthRecover += DisplayHealthRecoveryAnimation;
 			inputHandler.OnManaRecover += DisplayManaRecoveryAnimation;
 		}
+
+		if(interactionsController)
+		{
+			interactionsController.OnHeavyCarrying += SetHeavyCarryingStatus;
+			interactionsController.OnLightCarrying += SetLightCarryingStatus;
+		}
 	}
 
 	private void OnDisable()
@@ -41,6 +49,12 @@ public class PlayerAnimatorController : MonoBehaviour
 		{
 			inputHandler.OnHealthRecover -= DisplayHealthRecoveryAnimation;
 			inputHandler.OnManaRecover -= DisplayManaRecoveryAnimation;
+		}
+
+		if (interactionsController)
+		{
+			interactionsController.OnHeavyCarrying -= SetHeavyCarryingStatus;
+			interactionsController.OnLightCarrying -= SetLightCarryingStatus;
 		}
 	}
 
@@ -69,6 +83,22 @@ public class PlayerAnimatorController : MonoBehaviour
 		if (animator)
 		{
 			animator.SetTrigger("ManaRecovery");
+		}
+	}
+
+	private void SetHeavyCarryingStatus(bool status)
+	{
+		if(animator)
+		{
+			animator.SetBool("Carry_Heavy", status);
+		}
+	}
+
+	private void SetLightCarryingStatus(bool status)
+	{
+		if(animator)
+		{
+			animator.SetBool("Carry_Light", status);
 		}
 	}
 }

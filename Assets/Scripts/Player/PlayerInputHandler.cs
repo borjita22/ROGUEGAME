@@ -260,6 +260,20 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 
 	}
 
+	public void DisableWeapon()
+	{
+		weaponEnabled = false;
+		weapon.gameObject.SetActive(false);
+		weaponStatusAction.Disable();
+	}
+
+	public void EnableWeapon()
+	{
+		weaponEnabled = true;
+		weapon.gameObject.SetActive(true);
+		weaponStatusAction.Enable();
+	}
+
 	private void SwitchSkillAction()
 	{
 		OnSwitchSkill?.Invoke();

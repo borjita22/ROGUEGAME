@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,12 +12,17 @@ public class PlayerInteractionsController : MonoBehaviour, IInteractable
 
 	private PlayerInputHandler inputHandler;
 
-	[SerializeField] private Transform pickableElementSlot;
+	[Header("Pickable slots")]
+	[SerializeField] private Transform heavyPickableElementSlot;
+	[SerializeField] private Transform lightPickableElementSlot;
 
 	private bool isPickingUpObject = false;
 	private IInteractable interactableInHand;
 
 	public bool IsConsumedOnInteraction => false;
+
+	public Action<bool> OnHeavyCarrying;
+	public Action<bool> OnLightCarrying;
 
 	private void Awake()
 	{
@@ -75,13 +81,30 @@ public class PlayerInteractionsController : MonoBehaviour, IInteractable
 
 		if (closestInteractable != null && closestInteractable is IPickable pickable)
 		{
-			pickable.PickUp(pickableElementSlot);
+			Transform elementSlot;
+			if(pickable.weight == PickableWeight.Heavy)
+			{
+				elementSlot = heavyPickableElementSlot;
+				OnHeavyCarrying(true);
+			}
+			else
+			{
+				elementSlot = lightPickableElementSlot;
+				OnLightCarrying(true);
+			}
+			pickable.PickUp(elementSlot);
 			isPickingUpObject = true;
 			interactableInHand = (IInteractable)pickable;
 
 			if(interactablesInRange.Contains(interactableInHand))
 			{
 				interactablesInRange.Remove(interactableInHand);
+			}
+
+			//habria que hacer que el arma se guardase y deshabilitar el control de activar / desactivar el arma
+			if(inputHandler)
+			{
+				inputHandler.DisableWeapon();
 			}
 		}
 		else if (closestInteractable != null)
@@ -108,8 +131,22 @@ public class PlayerInteractionsController : MonoBehaviour, IInteractable
 		if (interactableInHand is IPickable pickable)
 		{
 			pickable.Drop();
+
+			if(pickable.weight == PickableWeight.Heavy)
+			{
+				OnHeavyCarrying(false);
+			}
+			else
+			{
+				OnLightCarrying(false);
+			}
 			interactableInHand = null;
 			isPickingUpObject = false;
+		}
+
+		if(inputHandler)
+		{
+			inputHandler.EnableWeapon();
 		}
 	}
 

@@ -5,6 +5,7 @@ using UnityEngine.VFX;
 
 public abstract class EffectableObject : InteractableEntity, IEffectable
 {
+	//Cada objeto debe determinar si se le puede o no aplicar cada determinado efecto
 	[SerializeField] protected EffectConfig effectConfig;
 	protected Dictionary<EffectType, EffectInstance> activeEffects = new Dictionary<EffectType, EffectInstance>();
 	protected Collider attachedCollider;
@@ -137,5 +138,28 @@ public abstract class EffectableObject : InteractableEntity, IEffectable
 				ApplyEffect(effect.Key);
 			}
 		}
+	}
+
+	//Esto hay que replantearselo por diseño, si nos compensa aplicar efectos por contacto o solamente por interaccion
+	protected void OnTriggerStay(Collider other)
+	{
+		//aplicar efecto sobre el otro objeto si detectamos que es Effectable
+		if(other.TryGetComponent<IEffectable>(out IEffectable effectableObj))
+		{
+			
+			foreach(var effect in activeEffects)
+			{
+				if(!(((EffectableObject)effectableObj).GetActiveEffects().ContainsKey(effect.Key)))
+				{
+					effectableObj.ApplyEffect(effect.Key);
+				}
+				
+			}
+		}
+	}
+
+	public Dictionary<EffectType, EffectInstance> GetActiveEffects()
+	{
+		return activeEffects;
 	}
 }
