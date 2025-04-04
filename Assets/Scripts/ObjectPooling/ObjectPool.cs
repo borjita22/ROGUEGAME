@@ -57,6 +57,11 @@ public class ObjectPool : MonoBehaviour
 
     public void ReturnToPool(GameObject element)
 	{
+        Transform parent = element.transform.parent;
+        if(parent == null || parent != this.transform)
+		{
+            element.transform.SetParent(this.transform);
+        }
         element.SetActive(false);
 	}
 

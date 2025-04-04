@@ -70,6 +70,7 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 	public bool isAttacking { get; private set; }
 
 	public event Action OnAttack;
+	public event Action OnAttackReleased;
 
 	//Action events: Keyboard
 	public event Action OnSwitchSkill;
@@ -118,6 +119,7 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		manaRecoverAction = playerInput.FindActionMap("Interaction").FindAction("ManaRecover");
 
 		attackAction.performed += OnAttackPerformed;
+		attackAction.canceled += OnAttackCanceled;
 		resetVRotationAction.performed += OnResetVRotationPerformed;
 		weaponStatusAction.performed += SetWeaponStatus;
 
@@ -185,6 +187,27 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 
 	private void DisableInputActions()
 	{
+
+		attackAction.performed -= OnAttackPerformed;
+		attackAction.canceled -= OnAttackCanceled;
+		resetVRotationAction.performed -= OnResetVRotationPerformed;
+		weaponStatusAction.performed -= SetWeaponStatus;
+
+		switchSkillAction.performed -= ctx => SwitchSkillAction();
+		useSkillAction.performed -= ctx => UseSkillKeyboard();
+
+		openSkillWheelAction.performed -= ctx => OnSkillWheelStatusChange(true);
+		openSkillWheelAction.canceled -= ctx => OnSkillWheelStatusChange(false);
+
+		useSkillA_Action.performed -= ctx => OnUseSkillOnGamepad(0);
+		useSkillB_Action.performed -= ctx => OnUseSkillOnGamepad(1);
+		useSkillX_Action.performed -= ctx => OnUseSkillOnGamepad(2);
+		useSkillY_Action.performed -= ctx => OnUseSkillOnGamepad(3);
+
+		interactAction.performed -= ctx => OnInteract?.Invoke();
+		healthRecoverAction.performed -= ctx => OnHealthRecover?.Invoke();
+		manaRecoverAction.performed -= ctx => OnManaRecover?.Invoke();
+
 		movementAction?.Disable();
 		aimingAction?.Disable();
 		attackAction.Disable();
@@ -212,8 +235,14 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 
 	private void OnAttackPerformed(InputAction.CallbackContext context)
 	{
-		isAttacking = true;
+		isAttacking = true; //esta variable de aqui de momento no nos esta sirviendo para nada
 		OnAttack?.Invoke();
+	}
+
+	private void OnAttackCanceled(InputAction.CallbackContext context)
+	{
+		isAttacking = false;
+		OnAttackReleased?.Invoke();
 	}
 
 	private void OnResetVRotationPerformed(InputAction.CallbackContext context)
