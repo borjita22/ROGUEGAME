@@ -7,13 +7,13 @@ using UnityEngine;
 public interface IInteractable
 {
     //Interaccion directa del jugador con el objeto
-    void Interact();
+    InteractionResult Interact(PlayerInteractionsController controller = null); //Aqui quizas no haga falta pasarle el controlador de interaccion salvo que se pretenda hacer algo especifico con el
 
     //Determina si este objeto puede interactuar con otro objeto
     bool CanInteractWith(IInteractable other);
 
     //Ejecuta la interaccion entre este objeto y otro
-    void InteractWith(IInteractable other);
+    InteractionResult InteractWith(IInteractable other);
 
     //Determina si este objeto debe ser eliminado como consecuencia de una interacción
     bool IsConsumedOnInteraction { get; }
@@ -22,4 +22,14 @@ public interface IInteractable
     void ReceiveInteraction(IInteractable from);
 
     
+}
+
+public enum InteractionResult
+{
+    None,
+    ItemPickedUp,
+    ItemConsumed,
+    InteractionApplied,
+    PushEnabled,
+    PushDisabled
 }

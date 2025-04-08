@@ -7,9 +7,21 @@ AvatarMask:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: UpperBody
-  m_Mask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+  m_Mask: 00000000010000000100000000000000000000000100000001000000010000000100000000000000000000000100000001000000
   m_Elements:
   - m_Path: Personaje_Test/Root/Chest_1/Chest_2/Right_Forearm
-    m_Weight: 10
-  - m_Path: Personaje_Test/Root/Chest_1/Chest_2/Right_Arm
-    m_Weight: 10
+    m_Weight: 1
+  - m_Path: Personaje_Test/Root/Chest_1/Chest_2/Right_Forearm/Right_Arm
+    m_Weight: 1
+  - m_Path: Personaje_Test/Root/Chest_1/Chest_2/Right_Forearm/Right_Arm/Right_Hand
+    m_Weight: 1
+  - m_Path: Personaje_Test/Root/Chest_1/Chest_2/Left_Forearm
+    m_Weight: 1
+  - m_Path: Personaje_Test/Root/Chest_1/Chest_2/Left_Forearm/Left_Arm
+    m_Weight: 1
+  - m_Path: Personaje_Test/Root/Chest_1/Chest_2/Left_Forearm/Left_Arm/Left_Hand
+    m_Weight: 1
+  - m_Path: Personaje_Test/Root/Chest_1/Chest_2/Right_Forearm/Right_Arm/Right_Hand/Piti
+    m_Weight: 1
+  - m_Path: Personaje_Test/Root/Chest_1/Chest_2/Right_Forearm/Right_Arm/Right_Hand/Zanahoria
+    m_Weight: 1

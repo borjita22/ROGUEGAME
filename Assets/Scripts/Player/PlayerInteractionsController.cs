@@ -6,20 +6,21 @@ using UnityEngine;
 /// <summary>
 /// Controla las interacciones del jugador con los elementos del entorno
 /// </summary>
-public class PlayerInteractionsController : MonoBehaviour, IInteractable
+public class PlayerInteractionsController : MonoBehaviour
 {
 	[SerializeField] private List<IInteractable> interactablesInRange = new List<IInteractable>();
 
 	private PlayerInputHandler inputHandler;
 
 	[Header("Pickable slots")]
-	[SerializeField] private Transform heavyPickableElementSlot;
-	[SerializeField] private Transform lightPickableElementSlot;
+	[SerializeField] public Transform heavyPickableElementSlot;
+	[SerializeField] public Transform lightPickableElementSlot;
 
 	private bool isPickingUpObject = false;
-	private IInteractable interactableInHand;
+	public IInteractable interactableInHand;
+	private IPushable currentPushable;
 
-	public bool IsConsumedOnInteraction => false;
+	//public bool IsConsumedOnInteraction => false;
 
 	public Action<bool> OnHeavyCarrying;
 	public Action<bool> OnLightCarrying;
@@ -57,8 +58,8 @@ public class PlayerInteractionsController : MonoBehaviour, IInteractable
 			{
 				InteractWithHeldItem(closestInteractable);
 			}
-			// Si no hay objeto cercano o no puede interactuar, simplemente soltar el objeto
-			else
+			// Si no hay objeto cercano
+			else if(closestInteractable == null)
 			{
 				DropHeldItem();
 			}
@@ -66,7 +67,14 @@ public class PlayerInteractionsController : MonoBehaviour, IInteractable
 		// Si no sostenemos nada, intentar recoger o interactuar con algo cercano
 		else if (interactablesInRange.Count > 0)
 		{
-			Interact();
+			IInteractable closestInteractable = FindClosestInteractable();
+
+			if (closestInteractable != null)
+			{
+				// Permitir que el objeto maneje su propia interacción
+				InteractionResult result = closestInteractable.Interact(this);
+				HandleInteractionResult(result, closestInteractable);
+			}
 		}
 		else
 		{
@@ -110,19 +118,21 @@ public class PlayerInteractionsController : MonoBehaviour, IInteractable
 		else if (closestInteractable != null)
 		{
 			// Interactuar con objetos no recogibles
-			closestInteractable.Interact();
+			closestInteractable.Interact(this);
 		}
 	}
 
+	//aqui tengo que comprobar que el objeto puede interactuar con el otro objeto
+	//Ademas, el metodo canInteractWith debe redefinirse en las diferentes subclases
 	private void InteractWithHeldItem(IInteractable target)
 	{
 		interactableInHand.InteractWith(target);
 
 		if (interactableInHand.IsConsumedOnInteraction)
 		{
-			Destroy(((MonoBehaviour)interactableInHand).gameObject);
-			interactableInHand = null;
-			isPickingUpObject = false;
+			DropHeldItem();
+			//Destroy(((MonoBehaviour)interactableInHand).gameObject);
+			
 		}
 	}
 
@@ -181,22 +191,58 @@ public class PlayerInteractionsController : MonoBehaviour, IInteractable
 			((MonoBehaviour)interactable).transform.position)).FirstOrDefault();
 	}
 
-
-	//No se si el jugador va a tener que implementar necesariamente la interfaz IInteractable, ya que eso podria dar lugar a comportamientos imprevistos
-	//y bucles de interaccion. Quizas solamente interesa que el jugador implemente la interfaz IEffectable, que sera la que se encargue de aplicar diferentes efectos de 
-	//estado a los objetos
-	public bool CanInteractWith(IInteractable other)
+	private void HandleInteractionResult(InteractionResult result, IInteractable interactable)
 	{
-		throw new System.NotImplementedException();
-	}
+		switch (result)
+		{
+			case InteractionResult.ItemPickedUp:
+				isPickingUpObject = true;
+				interactableInHand = interactable;
 
-	public void InteractWith(IInteractable other)
-	{
-		throw new System.NotImplementedException();
-	}
+				// Determinar peso y notificar
+				if (interactable is IPickable pickable)
+				{
+					if (pickable.weight == PickableWeight.Heavy)
+						OnHeavyCarrying?.Invoke(true);
+					else
+						OnLightCarrying?.Invoke(true);
+				}
 
-	public void ReceiveInteraction(IInteractable from)
-	{
-		throw new System.NotImplementedException();
+				// Remover de la lista de interactuables en rango
+				if (interactablesInRange.Contains(interactableInHand))
+				{
+					interactablesInRange.Remove(interactableInHand);
+				}
+
+				// Deshabilitar arma mientras cargamos objetos
+				if (inputHandler)
+				{
+					inputHandler.DisableWeapon();
+				}
+				break;
+
+			case InteractionResult.PushEnabled:
+				// Almacenar referencia si es un objeto empujable
+				currentPushable = interactable as IPushable;
+				break;
+
+			case InteractionResult.PushDisabled:
+				// Limpiar referencia
+				currentPushable = null;
+				break;
+
+			case InteractionResult.ItemConsumed:
+				// El objeto ya se consumió/destruyó en su propia lógica
+				// No necesitamos hacer nada aquí
+				break;
+
+			case InteractionResult.InteractionApplied:
+				// Interacción genérica completada
+				break;
+
+			case InteractionResult.None:
+				// No ocurrió nada especial
+				break;
+		}
 	}
 }

@@ -56,7 +56,7 @@ Material:
     m_Floats:
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _WindReceiver: 1
+    - _WindReceiver: 0
     - _WindSpeed: 1
     m_Colors: []
   m_BuildTextureStacks: []

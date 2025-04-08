@@ -6,16 +6,27 @@ using UnityEngine.VFX;
 public abstract class EffectableObject : InteractableEntity, IEffectable
 {
 	//Cada objeto debe determinar si se le puede o no aplicar cada determinado efecto
+	[SerializeField] protected List<EffectType> aplicableEffects = new List<EffectType>();
 	[SerializeField] protected EffectConfig effectConfig;
 	protected Dictionary<EffectType, EffectInstance> activeEffects = new Dictionary<EffectType, EffectInstance>();
+	
 	protected Collider attachedCollider;
+	protected Collider groundCollider;
+
+	protected Rigidbody rb;
+
+	protected GameObject effectObject;
 
 	protected virtual void Awake()
 	{
 		attachedCollider = GetComponent<Collider>();
+		rb = GetComponent<Rigidbody>();
+		groundCollider = transform.Find("Collider").GetComponent<Collider>();
 	}
 	public virtual void ApplyEffect(EffectType effectType)
 	{
+		if (!aplicableEffects.Contains(effectType)) return;
+
 		if(!activeEffects.ContainsKey(effectType))
 		{
 			activeEffects[effectType] = new EffectInstance(effectType, 0f); //La duracion seguramente no sea necesaria
@@ -55,7 +66,7 @@ public abstract class EffectableObject : InteractableEntity, IEffectable
 	protected virtual void OnEffectApplied(EffectType effectType)
 	{
 		// Obtener el efecto visual del pool
-		GameObject effectObject = effectConfig.GetEffectPool(effectType).GetObject();
+		effectObject = effectConfig.GetEffectPool(effectType).GetObject();
 		if (effectObject != null)
 		{
 			VisualEffect vfx = effectObject.GetComponent<VisualEffect>();
@@ -63,10 +74,16 @@ public abstract class EffectableObject : InteractableEntity, IEffectable
 			{
 				ConfigureVisualEffect(vfx);
 			}
-			effectObject.transform.position = transform.position;
-			effectObject.transform.SetParent(this.transform);
-			// Guardar referencia al objeto visual
-			activeEffects[effectType].VisualObject = effectObject;
+			
+
+			if(effectObject)
+			{
+				effectObject.transform.SetParent(this.transform);
+				effectObject.transform.position = attachedCollider.transform.position;
+				// Guardar referencia al objeto visual
+				activeEffects[effectType].VisualObject = effectObject;
+			}
+			
 		}
 	}
 
@@ -77,12 +94,23 @@ public abstract class EffectableObject : InteractableEntity, IEffectable
 		if (activeEffects[effectType].VisualObject != null)
 		{
 			activeEffects[effectType].VisualObject.transform.SetParent(null);
+
+			//Si tuviese la escala modificada, volver a poner el objeto en su escala real
+			if(activeEffects[effectType].VisualObject.transform.localScale != Vector3.one)
+			{
+				activeEffects[effectType].VisualObject.transform.localScale = Vector3.one;
+			}
 			//activeEffects[effectType].VisualObject.SetActive(false);
 			PoolableObject poolableObject = activeEffects[effectType].VisualObject.GetComponent<PoolableObject>();
 
 			if(poolableObject)
 			{
 				poolableObject.ReturnToPool();
+			}
+
+			if(effectObject)
+			{
+				effectObject = null;
 			}
 		}
 	}
@@ -106,21 +134,7 @@ public abstract class EffectableObject : InteractableEntity, IEffectable
 
 	protected virtual void Update()
 	{
-		//List<EffectType> effectsToRemove = new List<EffectType>();
 
-		//foreach (var effect in activeEffects)
-		//{
-		//	effect.Value.Update(Time.deltaTime);
-		//	if (!effect.Value.IsActive)
-		//	{
-		//		effectsToRemove.Add(effect.Key);
-		//	}
-		//}
-
-		//foreach (var effect in effectsToRemove)
-		//{
-		//	RemoveEffect(effect);
-		//}
 	}
 
 	public override void ReceiveInteraction(IInteractable from)

@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3308870}
   - component: {fileID: 13561422}
   - component: {fileID: 5492036}
-  - component: {fileID: 11465234}
   m_Layer: 0
   m_Name: BulletPurpleOBJ
   m_TagString: Untagged
@@ -91,21 +90,3 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &11465234
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 137890}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b44085c409024ec4293afa0c9d973694, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  impactParticle: {fileID: 134602, guid: 9811f23e2b85d1e43a44d6fe4f1a0c73, type: 3}
-  projectileParticle: {fileID: 105806, guid: 7e49f3fe9cca6a04d9a5e277d67f3682, type: 3}
-  muzzleParticle: {fileID: 151534, guid: 26c9be2521f9c9a439c5eed1a1b3830e, type: 3}
-  trailParticles: []
-  colliderRadius: 0.15
-  collideOffset: 0.25
