@@ -117,19 +117,23 @@ public abstract class EffectableObject : InteractableEntity, IEffectable
 
 	protected void ConfigureVisualEffect(VisualEffect vfx)
 	{
-		if (attachedCollider is BoxCollider boxCollider)
+		if (groundCollider is BoxCollider boxCollider)
 		{
 			vfx.SetBool("IsSphereCollider", false);
 			Vector3 size = Vector3.Scale(boxCollider.size, transform.lossyScale);
 			vfx.SetVector3("BoxSize", size);
 		}
-		else if (attachedCollider is SphereCollider sphereCollider)
+		else if (groundCollider is SphereCollider sphereCollider)
 		{
 			vfx.SetBool("IsSphereCollider", true);
 			float radius = sphereCollider.radius * Mathf.Max(transform.lossyScale.x,
 				transform.lossyScale.y, transform.lossyScale.z);
 			vfx.SetFloat("SphereRadius", radius);
 		}
+
+		//VisualEffect secondaryEffect = vfx.GetComponentInChildren<VisualEffect>();
+
+
 	}
 
 	protected virtual void Update()
