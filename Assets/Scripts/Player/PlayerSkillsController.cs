@@ -17,6 +17,8 @@ public class PlayerSkillsController : MonoBehaviour
 
     [SerializeField] private ISkill[] equippedSkills = new ISkill[MAX_SKILL_SLOTS];
 
+	
+
     //Para modo teclado y raton -> Indice de habilidad seleccionada
     private int selectedSkillIndex = 0;
 
@@ -28,10 +30,6 @@ public class PlayerSkillsController : MonoBehaviour
 	public event Action<int, ISkill> OnSkillEquipped;
 	public event Action<int> OnSkillSelected;
 
-	private void OnEnable()
-	{
-		
-	}
 
 	private void Awake()
 	{
@@ -113,7 +111,7 @@ public class PlayerSkillsController : MonoBehaviour
 
 	private void SetSkillWheelStatus(bool status)
 	{
-		Debug.Log("Wheel is enabled: " + status);
+		//Debug.Log("Wheel is enabled: " + status);
 		skillWheelActive = status;
 	}
 
@@ -136,7 +134,7 @@ public class PlayerSkillsController : MonoBehaviour
 
 		if(equippedSkills[index] != null && equippedSkills[index].CanUse())
 		{
-			if(! (equippedSkills[index].Definition is ProjectileSkillDefinition))
+			if(!(equippedSkills[index].Definition is ProjectileSkillDefinition))
 			{
 				equippedSkills[index].Use(playerController.GetMovementDirection()); //Esto seria momentaneo, solamente para ver si se ejecuta la skill que corresponda
 			}
@@ -189,6 +187,8 @@ public class PlayerSkillsController : MonoBehaviour
 			currentSelectedSkill = skillDef;
 		}
 	}
+
+	
 }
 
 

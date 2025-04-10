@@ -88,7 +88,7 @@ public class AttackLogic : MonoBehaviour
 				}
 				break;
 		}
-		FireSingleBullet();
+		//FireSingleBullet();
 
 	}
 
@@ -138,6 +138,20 @@ public class AttackLogic : MonoBehaviour
 				muzzleFlash.transform.position = weaponMuzzle.transform.position;
 				//muzzleFlash.transform.forward = weaponMuzzle.forward; //Esto es chapucero hasta que consiga centrar bien el efecto del muzzle
 				//muzzleFlash.transform.SetParent(weaponMuzzle);
+
+				bool isFlipped = transform.lossyScale.x < 0;
+
+				// Ajustar la rotación del muzzle flash según la orientación
+				if (isFlipped)
+				{
+					// Si está volteado, invierte la dirección del forward
+					muzzleFlash.transform.forward = -weaponMuzzle.forward;
+				}
+				else
+				{
+					// Dirección normal
+					muzzleFlash.transform.forward = weaponMuzzle.forward;
+				}
 			}
 		}
 	}

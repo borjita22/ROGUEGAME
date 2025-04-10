@@ -35,6 +35,8 @@ public class AimingLogic : MonoBehaviour
     [SerializeField] private float minVerticalAngle = -30f;
     [SerializeField] private float maxVerticalAngle = 30f;
     [SerializeField] private float verticalRotationSpeed = 60f; // Grados por segundo
+    [Header("Mouse")]
+    [SerializeField] private float scrollSensitivity = 0.1f;
     private float currentVerticalAngle = 0f;
 
     [Header("Aiming line references")]
@@ -174,7 +176,7 @@ public class AimingLogic : MonoBehaviour
 
         if(usingMouse)
 		{
-            verticalInput = Mouse.current.scroll.ReadValue().y;
+            verticalInput = Mouse.current.scroll.ReadValue().y * scrollSensitivity;
 		}
         else if(Gamepad.current != null)
 		{

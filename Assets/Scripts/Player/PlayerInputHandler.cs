@@ -14,6 +14,12 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 	private InputAction resetVRotationAction;
 	private InputAction weaponStatusAction;
 
+	//Jump action
+	private InputAction jumpAction;
+
+	//Dash action
+	private InputAction dashAction;
+
 	//Skill related actions: Keyboard
 	private InputAction switchSkillAction;
 	private InputAction useSkillAction;
@@ -38,6 +44,8 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 
 	private Weapon weapon;
 	private bool weaponEnabled = true;
+
+	private bool skillsWheelEnabled = false;
 
 
 	public Vector2 AimingInput
@@ -68,6 +76,11 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 
 
 	public bool isAttacking { get; private set; }
+
+	public event Action OnJump;
+	private bool jumpButtonHeld;
+
+	public event Action OnDash;
 
 	public event Action OnAttack;
 	public event Action OnAttackReleased;
@@ -105,6 +118,9 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		resetVRotationAction = playerInput.FindActionMap("Combat").FindAction("ResetVerticalRotation");
 		weaponStatusAction = playerInput.FindActionMap("Combat").FindAction("SetWeaponStatus");
 
+		jumpAction = playerInput.FindActionMap("Movement").FindAction("Jump");
+		dashAction = playerInput.FindActionMap("Movement").FindAction("Dash");
+
 		switchSkillAction = playerInput.FindActionMap("Skills").FindAction("SwitchSkill");
 		useSkillAction = playerInput.FindActionMap("Skills").FindAction("UseSkill");
 
@@ -122,6 +138,11 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		attackAction.canceled += OnAttackCanceled;
 		resetVRotationAction.performed += OnResetVRotationPerformed;
 		weaponStatusAction.performed += SetWeaponStatus;
+
+		jumpAction.performed += OnJumpPerformed;
+		jumpAction.canceled += OnJumpCancelled;
+
+		dashAction.performed += ctx => OnDashPerformed();
 
 		switchSkillAction.performed += ctx => SwitchSkillAction();
 		useSkillAction.performed += ctx => UseSkillKeyboard();
@@ -170,6 +191,9 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		resetVRotationAction.Enable();
 		weaponStatusAction.Enable();
 
+		jumpAction.Enable();
+		dashAction.Enable();
+
 
 		switchSkillAction.Enable();
 		useSkillAction.Enable();
@@ -193,6 +217,11 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		resetVRotationAction.performed -= OnResetVRotationPerformed;
 		weaponStatusAction.performed -= SetWeaponStatus;
 
+		jumpAction.performed -= OnJumpPerformed;
+		jumpAction.canceled -= OnJumpCancelled; //Esto ya no me interesa
+
+		dashAction.performed -= ctx => OnDashPerformed();
+
 		switchSkillAction.performed -= ctx => SwitchSkillAction();
 		useSkillAction.performed -= ctx => UseSkillKeyboard();
 
@@ -212,6 +241,9 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		aimingAction?.Disable();
 		attackAction.Disable();
 		resetVRotationAction.Disable();
+
+		jumpAction.Disable();
+		dashAction.Disable();
 
 
 		switchSkillAction.Disable();
@@ -233,6 +265,24 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		Debug.Log($"PlayerInputHandler: Dispositivo cambiado a {deviceType}");
 	}
 
+	//No se puede invocar el evento si tenemos la rueda de habilidades activa
+	private void OnJumpPerformed(InputAction.CallbackContext context)
+	{
+		if (skillsWheelEnabled == true) return;
+
+		jumpButtonHeld = true;
+		OnJump?.Invoke();
+	}
+
+	private void OnJumpCancelled(InputAction.CallbackContext context)
+	{
+		jumpButtonHeld = false;
+	}
+
+	private void OnDashPerformed()
+	{
+		OnDash?.Invoke();
+	}
 	private void OnAttackPerformed(InputAction.CallbackContext context)
 	{
 		isAttacking = true; //esta variable de aqui de momento no nos esta sirviendo para nada
@@ -287,12 +337,19 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 
 	private void OnSkillWheelStatusChange(bool status)
 	{
+		skillsWheelEnabled = status;
+
 		_OnOpenSkillWheel?.Invoke(status);
 	}
 
 	private void OnUseSkillOnGamepad(int index)
 	{
 		_OnUseGamepadSkill?.Invoke(index);
+	}
+
+	public bool IsJumpHeld()
+	{
+		return jumpButtonHeld;
 	}
 
 }

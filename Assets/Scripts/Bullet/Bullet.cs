@@ -81,6 +81,7 @@ public class Bullet : MonoBehaviour
 		}
 	}
 
+    //Hay que ignorar todas las colisiones que provengan de la layer del player
 	private void OnTriggerEnter(Collider other)
 	{
 		if(other.TryGetComponent<EnemyController>(out var enemy))

@@ -126,8 +126,16 @@ public class PlayerInteractionsController : MonoBehaviour
 	//Ademas, el metodo canInteractWith debe redefinirse en las diferentes subclases
 	private void InteractWithHeldItem(IInteractable target)
 	{
-		interactableInHand.InteractWith(target);
-
+		if(interactableInHand.CanInteractWith(target))
+		{
+			interactableInHand.InteractWith(target);
+		}
+		else
+		{
+			return;
+		}
+		
+		//Si el objeto no puede interactuar esto no se debe de poder ejecutar, ya que estariamos eliminando el objeto
 		if (interactableInHand.IsConsumedOnInteraction)
 		{
 			DropHeldItem();

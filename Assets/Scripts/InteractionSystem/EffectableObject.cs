@@ -30,9 +30,10 @@ public abstract class EffectableObject : InteractableEntity, IEffectable
 		if(!activeEffects.ContainsKey(effectType))
 		{
 			activeEffects[effectType] = new EffectInstance(effectType, 0f); //La duracion seguramente no sea necesaria
+			OnEffectApplied(effectType);
+			HandleEffectInteractions(effectType);
 		}
-		OnEffectApplied(effectType);
-		HandleEffectInteractions(effectType);
+
 	}
 
 	public bool HasEffect(EffectType effectType)
@@ -63,6 +64,8 @@ public abstract class EffectableObject : InteractableEntity, IEffectable
 		//resto de interacciones entre efectos
 	}
 
+
+	//en este metodo tambien hay que ver si se puede eliminar el efecto anterior, por ejemplo, si aplicamos hielo sobre un objeto, el fuego se elimina
 	protected virtual void OnEffectApplied(EffectType effectType)
 	{
 		// Obtener el efecto visual del pool
@@ -139,6 +142,13 @@ public abstract class EffectableObject : InteractableEntity, IEffectable
 	protected virtual void Update()
 	{
 
+	}
+
+
+	public override bool CanInteractWith(IInteractable other)
+	{
+		//la caja, al igual que la antorcha solamente puede interactuar con los objetos que sean susceptibles de recibir efectos de estado
+		return other is IEffectable;
 	}
 
 	public override void ReceiveInteraction(IInteractable from)

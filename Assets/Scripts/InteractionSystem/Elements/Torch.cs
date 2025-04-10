@@ -57,6 +57,7 @@ public class Torch : EffectableObject, IPickable
 		}
 	}
 
+
 	protected override void OnEffectApplied(EffectType effectType)
 	{
 		base.OnEffectApplied(effectType);
