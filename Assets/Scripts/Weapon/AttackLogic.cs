@@ -22,10 +22,20 @@ public class AttackLogic : MonoBehaviour
 	[SerializeField] private float fireRate = 0.1f;
 	[SerializeField] private int burstCount = 3;
 
+	[Space]
+	[Header("Weapon effect elements")]
+	[SerializeField] private WeaponEffect currentWeaponEffect = WeaponEffect.Standard;
+	[SerializeField] private GameObject fireElementEffect;
+	[SerializeField] private GameObject iceElementEffect;
+	[SerializeField] private GameObject electricElementEffect;
+
+
 	private bool isFiring = false;
 	private Coroutine autoFireCoroutine;
 	private Coroutine burstFireCoroutine;
 	private bool canFire = true;
+
+	private bool isWeaponEffectActive;
 
 	private void Awake()
 	{
@@ -35,6 +45,10 @@ public class AttackLogic : MonoBehaviour
 
 		bulletPool = GameObject.Find("BulletPool").GetComponent<ObjectPool>();
 		muzzleFlashPool = GameObject.Find("MuzzleFlashPool").GetComponent<ObjectPool>();
+
+		fireElementEffect.SetActive(false);
+		iceElementEffect.SetActive(false);
+		electricElementEffect.SetActive(false);
 	}
 
 	private void OnEnable()
@@ -67,27 +81,35 @@ public class AttackLogic : MonoBehaviour
 		//Si es manual, simplemente disparamos una bala
 		//Si es semiautomatica, hay que disparar una rafaga
 		//Si es automatica, y mientras se mantenga pulsado, hay que continuar generando proyectiles
-		switch (weaponType)
+		if(currentWeaponEffect == WeaponEffect.Standard)
 		{
-			case WeaponType.Manual:
+			switch (weaponType)
+			{
+				case WeaponType.Manual:
 
-				FireSingleBullet();
-				StartCoroutine(FireRateCooldown());
-				break;
-			case WeaponType.Semiautomatic:
-				if(burstFireCoroutine == null)
-				{
-					burstFireCoroutine = StartCoroutine(BurstFireCoroutine());
-				}
-				break;
-			case WeaponType.Automatic:
-				isFiring = true;
-				if(autoFireCoroutine == null)
-				{
-					autoFireCoroutine = StartCoroutine(AutomaticFire());
-				}
-				break;
+					FireSingleBullet();
+					StartCoroutine(FireRateCooldown());
+					break;
+				case WeaponType.Semiautomatic:
+					if (burstFireCoroutine == null)
+					{
+						burstFireCoroutine = StartCoroutine(BurstFireCoroutine());
+					}
+					break;
+				case WeaponType.Automatic:
+					isFiring = true;
+					if (autoFireCoroutine == null)
+					{
+						autoFireCoroutine = StartCoroutine(AutomaticFire());
+					}
+					break;
+			}
 		}
+		else
+		{
+			ActivateElementalEffect();
+		}
+		
 		//FireSingleBullet();
 
 	}
@@ -95,6 +117,7 @@ public class AttackLogic : MonoBehaviour
 	private void StopAttack()
 	{
 		isFiring = false;
+		DeactivateElementalEffects();
 	}
 
 
@@ -183,6 +206,65 @@ public class AttackLogic : MonoBehaviour
 		autoFireCoroutine = null;
 	}
 
+	//Esto se puede refactorizar haciendo una variable currentEffect, y haciendo que sea el gameObject del efecto el que settee esa variable para luego settear la posicion del gameObject
+	private void ActivateElementalEffect()
+	{
+		DeactivateElementalEffects();
+
+		switch(currentWeaponEffect)
+		{
+			case WeaponEffect.Fire:
+				if(fireElementEffect)
+				{
+					currentWeaponEffect = WeaponEffect.Fire;
+					fireElementEffect.SetActive(true);
+
+					fireElementEffect.transform.position = weaponMuzzle.transform.position;
+					fireElementEffect.transform.forward = weaponMuzzle.transform.forward;
+				}
+				break;
+
+			case WeaponEffect.Ice:
+				if(iceElementEffect)
+				{
+					currentWeaponEffect = WeaponEffect.Ice;
+					iceElementEffect.SetActive(true);
+
+					iceElementEffect.transform.position = weaponMuzzle.transform.position;
+					iceElementEffect.transform.forward = weaponMuzzle.transform.forward;
+				}
+				break;
+
+			case WeaponEffect.Electric:
+				if(electricElementEffect)
+				{
+					currentWeaponEffect = WeaponEffect.Electric;
+					electricElementEffect.SetActive(true);
+
+					electricElementEffect.transform.position = weaponMuzzle.transform.position;
+					electricElementEffect.transform.forward = weaponMuzzle.transform.forward;
+				}
+				break;
+		}
+
+		isWeaponEffectActive = true;
+	}
+
+	private void DeactivateElementalEffects()
+	{
+		if (fireElementEffect) fireElementEffect.SetActive(false);
+		if (iceElementEffect) iceElementEffect.SetActive(false);
+		if (electricElementEffect) electricElementEffect.SetActive(false);
+
+		//currentWeaponEffect = WeaponEffect.Standard;
+		isWeaponEffectActive = false;
+	}
+
+	public void CycleWeaponEffect()
+	{
+		currentWeaponEffect = (WeaponEffect)(((int)currentWeaponEffect + 1) % System.Enum.GetValues(typeof(WeaponEffect)).Length);
+	}
+
 	//Hay que hacer metodos para settear los datos del arma (Esto se hara una vez configure los diferentes scriptableObjects
 }
 
@@ -191,4 +273,12 @@ public enum WeaponType
 	Manual,
 	Semiautomatic,
 	Automatic
+}
+
+public enum WeaponEffect
+{
+	Standard,
+	Fire,
+	Ice,
+	Electric
 }
