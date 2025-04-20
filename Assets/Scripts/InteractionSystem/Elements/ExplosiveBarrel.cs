@@ -14,7 +14,8 @@ public class ExplosiveBarrel : Box
 
 	}
 
-	private void OnDisable()
+	
+	private new void OnDisable()
 	{
 		if(explosionPool)
 		{
@@ -23,6 +24,10 @@ public class ExplosiveBarrel : Box
 			explosion.transform.position = this.transform.position;
 
 			//Ademas de todo esto, hay que generar el collider de la explosion, que a su vez aplica un efecto de fuego a todos los objetos cercanos
+			//Se va a generar el efecto de fuego desde este mismo script
+
+			//ojo, esto se puede generar aqui, pero quizas interesa mas generarlo directamente a la altura del suelo, sin tener que calcular
+			//dinamicamente la posicion en la que generarlo
 		}
 	}
 }

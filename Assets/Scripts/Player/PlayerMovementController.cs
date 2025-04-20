@@ -8,6 +8,7 @@ public class PlayerMovementController : MonoBehaviour
 
     [Header("Movement Configuration")]
     [SerializeField] private float moveSpeed = 8f;
+    [SerializeField] private float maxMoveSpeed = 16f;
     [SerializeField] private float acceleration = 25f;
     [SerializeField] private float deceleration = 35f;
     [SerializeField] private float directionChangeMultiplier = 1.5f;
@@ -24,7 +25,8 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private Transform groundCheckpoint;
 
     [SerializeField] private bool isGrounded;
-    [SerializeField] private bool canJump = false;
+    private int jumpIndex = 0;
+    [SerializeField] private bool canDoubleJump;
     private float initialJumpVelocity;
     [SerializeField] private bool isJumping = false;
     private float jumpTimer = 0f;
@@ -47,7 +49,7 @@ public class PlayerMovementController : MonoBehaviour
     private PlayerInputHandler playerInput;
     private Vector3 currentVelocity;
 
-    // Propiedades para el controlador de animación
+    // Propiedades para el controlador de animaci?n
     public float NormalizedSpeed => currentVelocity.magnitude / moveSpeed;
     public Vector3 MovementDirection => new Vector3(currentVelocity.x, 0, currentVelocity.z).normalized;
     public bool IsMoving => currentVelocity.magnitude > 0.1f;
@@ -59,10 +61,16 @@ public class PlayerMovementController : MonoBehaviour
     private bool isJumpFinished = false;
 
     public event System.Action<bool> OnDash;
-    //private bool isJumpFinished = false;
 
 
     private bool isFacingRight = true;
+
+    [SerializeField] private PlayerStats playerStats;
+
+    private HookController hookController;
+
+    public bool isGrappling = false;
+    private bool grapplingStarted = false;
 
     private void Awake()
     {
@@ -73,14 +81,26 @@ public class PlayerMovementController : MonoBehaviour
         {
             rb.constraints = RigidbodyConstraints.FreezeRotation;
         }
+
+        hookController = GetComponentInChildren<HookController>();
     }
 
     private void OnEnable()
     {
         if (playerInput)
         {
-            playerInput.OnJump += EnableJump;
+            playerInput.OnJump += ProcessJump;
             playerInput.OnDash += InitializeDash;
+        }
+
+        if(playerStats)
+        {
+            playerStats.OnStatChange += OnPlayerStatChanged;
+        }
+
+        if(hookController)
+        {
+            hookController.OnGrapplingStarted += StartHook;
         }
 
     }
@@ -89,8 +109,18 @@ public class PlayerMovementController : MonoBehaviour
     {
         if (playerInput)
         {
-            playerInput.OnJump -= EnableJump;
+            playerInput.OnJump -= ProcessJump;
             playerInput.OnDash -= InitializeDash;
+        }
+
+        if (playerStats)
+        {
+            playerStats.OnStatChange -= OnPlayerStatChanged;
+        }
+
+        if (hookController)
+        {
+            hookController.OnGrapplingStarted -= StartHook;
         }
 
     }
@@ -114,6 +144,12 @@ public class PlayerMovementController : MonoBehaviour
         else if(isGrounded)
 		{
             ResetJumpState();
+            if(isGrappling && grapplingStarted)
+            {
+                isGrappling = false;
+                grapplingStarted = false;
+            }
+            
 		}
 
         UpdateDashCooldown();
@@ -144,21 +180,22 @@ public class PlayerMovementController : MonoBehaviour
     {
         ApplyGravityModifiers();
         ProcessMovement();
-        ProcessJump();
         ManageCharacterOrientation();
         
     }
 
     private void ProcessMovement()
     {
+        if (isGrappling) return;
+
         // Obtener input
         Vector2 input = playerInput.MovementInput;
 
-        // Calcular dirección y magnitud
+        // Calcular direcci?n y magnitud
         Vector3 movementDirection = new Vector3(input.x, 0, input.y);
         float inputMagnitude = Mathf.Min(movementDirection.magnitude, 1f);
 
-        // Normalizar la dirección (si hay input)
+        // Normalizar la direcci?n (si hay input)
         if (inputMagnitude > 0.1f)
         {
             movementDirection.Normalize();
@@ -175,21 +212,21 @@ public class PlayerMovementController : MonoBehaviour
 
         if (inputMagnitude > 0.1f)
         {
-            // Comprobar si hay un cambio significativo de dirección
+            // Comprobar si hay un cambio significativo de direcci?n
             if (Vector3.Dot(movementDirection, MovementDirection) < 0.5f && IsMoving)
             {
-                // Cambio brusco de dirección - aplicar factor multiplicador
+                // Cambio brusco de direcci?n - aplicar factor multiplicador
                 smoothFactor = acceleration * directionChangeMultiplier;
             }
             else
             {
-                // Aceleración normal
+                // Aceleraci?n normal
                 smoothFactor = acceleration;
             }
         }
         else
         {
-            // Desaceleración al detenerse
+            // Desaceleraci?n al detenerse
             smoothFactor = deceleration;
         }
 
@@ -229,7 +266,7 @@ public class PlayerMovementController : MonoBehaviour
         }
     }
 
-    // Método público para debugging
+    // M?todo p?blico para debugging
     public Vector3 GetCurrentVelocity()
     {
         return currentVelocity;
@@ -259,32 +296,37 @@ public class PlayerMovementController : MonoBehaviour
         }
 	}
 
-    private void EnableJump()
-	{
-        canJump = true;
-	}
-
     private void ProcessJump()
     {
-        if(isGrounded && canJump)
-		{
-            OnJump?.Invoke(true);
-            isJumpFinished = false;
-            initialJumpVelocity = Mathf.Sqrt(jumpForce * Mathf.Abs(Physics.gravity.y));
+        if(isGrounded)
+        {
+            jumpIndex = 0;
+            PerformJump();
+        }
+        else if(canDoubleJump && jumpIndex == 0)
+        {
+            PerformJump();
+            jumpIndex++;
+        }
 
-            Vector3 velocity = rb.velocity; //este vector de velocidad deberia ir mas rapido desde jumpVelocity a 0 a medida que avanza el salto
+    }
 
-            velocity.y = initialJumpVelocity;
+    private void PerformJump()
+    {
+        OnJump?.Invoke(true);
+        isJumpFinished = false;
+        initialJumpVelocity = Mathf.Sqrt(jumpForce * Mathf.Abs(Physics.gravity.y));
 
-            velocity.y = Mathf.Lerp(initialJumpVelocity, 0f, jumpTimer);
+        Vector3 velocity = rb.velocity;
 
-            rb.velocity = velocity;
+        velocity.y = initialJumpVelocity;
 
-            isJumping = true;
-            jumpTimer = 0f;
-            canJump = false;
-		}
+        velocity.y = Mathf.Lerp(initialJumpVelocity, 0f, jumpTimer);
 
+        rb.velocity = velocity;
+
+        isJumping = true;
+        jumpTimer = 0f;
     }
 
     private void InitializeDash()
@@ -309,7 +351,7 @@ public class PlayerMovementController : MonoBehaviour
 
         PlayDashFeedback();
 
-        // Normalizar dirección
+        // Normalizar direcci?n
         direction = direction.normalized;
 
         // Variables para tracking
@@ -343,27 +385,6 @@ public class PlayerMovementController : MonoBehaviour
 
     public void CancelDash()
     {
-        //if (IsExecuting && activeCoroutine != null)
-        //{
-        //    // Detener corrutina
-        //    SkillCoroutineRunner.Instance.StopRoutine(activeCoroutine);
-
-        //    // Desactivar invulnerabilidad si estaba activa
-        //    if (dashDefinition.providesInvulnerability)
-        //    {
-        //        //owner.SetInvulnerable(false);
-        //    }
-
-        //    if (dashPrefab) //Hay que replantearse la opcion de instanciar y destruir objetos, sobre todo en las skills que van a tener poco cooldown
-        //    {
-        //        dashPrefab.SetActive(false);
-        //    }
-
-        //    // Limpiar estado
-        //    IsExecuting = false;
-        //    activeCoroutine = null;
-        //}
-
         if(isExecutingDash && dashCoroutine != null)
 		{
             SkillCoroutineRunner.Instance.StopRoutine(dashCoroutine);
@@ -430,6 +451,22 @@ public class PlayerMovementController : MonoBehaviour
 		}
 	}
 
+    //Esto hay que clampearlo despues
+    private void OnPlayerStatChanged(string statName, int newValue)
+    {
+        if (statName == "Speed")
+        {
+            moveSpeed += (moveSpeed * (0.1f * newValue)); //Esto esta hardcodeado, hay que poner un ratio de crecimiento para cada controlador
+
+            moveSpeed = Mathf.Clamp(moveSpeed, 0f, maxMoveSpeed);
+        }
+    }
+
+    private void StartHook()
+    {
+        grapplingStarted = true;
+    }
+
     private void OnDrawGizmos()
 	{
         if (groundCheckpoint != null)
@@ -438,5 +475,6 @@ public class PlayerMovementController : MonoBehaviour
             Gizmos.DrawWireSphere(groundCheckpoint.position, groundCheckRadius);
         }
     }
+
 
 }

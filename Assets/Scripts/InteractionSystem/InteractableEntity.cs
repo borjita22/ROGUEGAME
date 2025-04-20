@@ -10,7 +10,7 @@ public class InteractableEntity : MonoBehaviour, IInteractable
 
     public virtual InteractionResult Interact(PlayerInteractionsController controller)
     {
-        Debug.Log("Interacción básica con objeto interactuable");
+        Debug.Log("Interacci?n b?sica con objeto interactuable");
         return InteractionResult.InteractionApplied;
     }
 
@@ -28,6 +28,20 @@ public class InteractableEntity : MonoBehaviour, IInteractable
 
     public virtual void ReceiveInteraction(IInteractable from)
     {
-        Debug.Log($"Recibiendo interacción de {from}");
+        Debug.Log($"Recibiendo interacci?n de {from}");
+    }
+
+    protected virtual void OnDisable()
+    {
+        //Codigo a ejecutar cuando se desactiva un objeto interactuable
+        if (PoolMediator.Instance)
+        {
+            GameObject disableCloud = PoolMediator.Instance.RequestPooledObject("DisappearCloud");
+            if (disableCloud)
+            {
+                disableCloud.transform.position = this.transform.position;
+
+            }
+        }
     }
 }

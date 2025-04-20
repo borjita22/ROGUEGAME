@@ -57,6 +57,7 @@ public class AttackLogic : MonoBehaviour
 		{
 			inputHandler.OnAttack += ProcessAttack;
 			inputHandler.OnAttackReleased += StopAttack;
+			inputHandler.OnSwitchWeaponEffect += CycleWeaponEffect;
 		}
 	}
 
@@ -67,6 +68,8 @@ public class AttackLogic : MonoBehaviour
 		{
 			inputHandler.OnAttack -= ProcessAttack;
 			inputHandler.OnAttackReleased -= StopAttack;
+			inputHandler.OnSwitchWeaponEffect -= CycleWeaponEffect;
+
 		}
 		StopAllCoroutines();
 		isFiring = false;
@@ -109,9 +112,6 @@ public class AttackLogic : MonoBehaviour
 		{
 			ActivateElementalEffect();
 		}
-		
-		//FireSingleBullet();
-
 	}
 
 	private void StopAttack()
@@ -164,15 +164,15 @@ public class AttackLogic : MonoBehaviour
 
 				bool isFlipped = transform.lossyScale.x < 0;
 
-				// Ajustar la rotación del muzzle flash según la orientación
+				// Ajustar la rotaci?n del muzzle flash seg?n la orientaci?n
 				if (isFlipped)
 				{
-					// Si está volteado, invierte la dirección del forward
+					// Si est? volteado, invierte la direcci?n del forward
 					muzzleFlash.transform.forward = -weaponMuzzle.forward;
 				}
 				else
 				{
-					// Dirección normal
+					// Direcci?n normal
 					muzzleFlash.transform.forward = weaponMuzzle.forward;
 				}
 			}
@@ -263,6 +263,7 @@ public class AttackLogic : MonoBehaviour
 	public void CycleWeaponEffect()
 	{
 		currentWeaponEffect = (WeaponEffect)(((int)currentWeaponEffect + 1) % System.Enum.GetValues(typeof(WeaponEffect)).Length);
+		Debug.Log("Current fire mode changed to: " + currentWeaponEffect);
 	}
 
 	//Hay que hacer metodos para settear los datos del arma (Esto se hara una vez configure los diferentes scriptableObjects

@@ -52,7 +52,7 @@ public abstract class EffectableObject : InteractableEntity, IEffectable
 
 	protected virtual void HandleEffectInteractions(EffectType newEffect)
 	{
-		// Reglas básicas de interacción (customizables en subclases)
+		// Reglas b?sicas de interacci?n (customizables en subclases)
 		if (newEffect == EffectType.Ice && HasEffect(EffectType.Fire))
 		{
 			RemoveEffect(EffectType.Fire);
@@ -125,6 +125,8 @@ public abstract class EffectableObject : InteractableEntity, IEffectable
 			vfx.SetBool("IsSphereCollider", false);
 			Vector3 size = Vector3.Scale(boxCollider.size, transform.lossyScale);
 			vfx.SetVector3("BoxSize", size);
+
+			vfx.SetFloat("SpawnRate", 100f * vfx.GetVector3("BoxSize").magnitude);
 		}
 		else if (groundCollider is SphereCollider sphereCollider)
 		{
@@ -132,9 +134,13 @@ public abstract class EffectableObject : InteractableEntity, IEffectable
 			float radius = sphereCollider.radius * Mathf.Max(transform.lossyScale.x,
 				transform.lossyScale.y, transform.lossyScale.z);
 			vfx.SetFloat("SphereRadius", radius);
+
+			vfx.SetFloat("SpawnRate", 200f * vfx.GetFloat("SphereRadius"));
 		}
 
 		//VisualEffect secondaryEffect = vfx.GetComponentInChildren<VisualEffect>();
+		//el spawn rate depende del radio de la esfera. se
+		
 
 
 	}
@@ -159,16 +165,12 @@ public abstract class EffectableObject : InteractableEntity, IEffectable
 		{
 			foreach(var effect in effectable.activeEffects)
 			{
-				if(effect.Value.IsActive) //Este IsActive de aqui actualmente no creo que me sirva de mucho, ya que en el momento en que deja de estar activo simplemente no tiene ningun efecto
-				{
-					
-				}
 				ApplyEffect(effect.Key);
 			}
 		}
 	}
 
-	//Esto hay que replantearselo por diseño, si nos compensa aplicar efectos por contacto o solamente por interaccion
+	//Esto hay que replantearselo por dise?o, si nos compensa aplicar efectos por contacto o solamente por interaccion
 	protected void OnTriggerStay(Collider other)
 	{
 		//aplicar efecto sobre el otro objeto si detectamos que es Effectable
@@ -177,11 +179,7 @@ public abstract class EffectableObject : InteractableEntity, IEffectable
 			
 			foreach(var effect in activeEffects)
 			{
-				if(!(((EffectableObject)effectableObj).GetActiveEffects().ContainsKey(effect.Key)))
-				{
-					effectableObj.ApplyEffect(effect.Key);
-				}
-				
+				effectableObj.ApplyEffect(effect.Key);
 			}
 		}
 	}
@@ -190,4 +188,9 @@ public abstract class EffectableObject : InteractableEntity, IEffectable
 	{
 		return activeEffects;
 	}
+
+	public List<EffectType> GetAplicableEffects()
+    {
+		return aplicableEffects;
+    }
 }

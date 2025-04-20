@@ -4,6 +4,10 @@ using UnityEngine;
 public class ObjectPool : MonoBehaviour
 {
     [Header("References")]
+
+    [SerializeField] private string objectName;
+    public string ObjectName => objectName;
+
     [SerializeField] protected GameObject pooledObject;
     [SerializeField] protected int numberOfPooledElements;
     
@@ -76,4 +80,5 @@ public class ObjectPool : MonoBehaviour
         // Asignar esta pool como origen
         poolable.SetOriginPool(this);
     }
+
 }

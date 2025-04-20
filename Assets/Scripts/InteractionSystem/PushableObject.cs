@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Los objetos empujables van a requerir todos un nivel de fuerza para ser empujados
 public class PushableObject : EffectableObject, IPushable
 {
 	[Header("Distance to detect player interaction")]
@@ -9,6 +10,8 @@ public class PushableObject : EffectableObject, IPushable
 
 	private Transform player;
 	private bool interactionEnabled;
+
+	[SerializeField] protected int requiredStrength;
 	protected override void Awake()
 	{
 		base.Awake();
@@ -44,8 +47,12 @@ public class PushableObject : EffectableObject, IPushable
 
 	public override InteractionResult Interact(PlayerInteractionsController controller)
 	{
-		EnablePush();
-		return InteractionResult.PushEnabled;
+		if(controller.PlayerStats.Strength >= requiredStrength)
+        {
+			EnablePush();
+			return InteractionResult.PushEnabled;
+		}
+		return InteractionResult.None;
 	}
 
 

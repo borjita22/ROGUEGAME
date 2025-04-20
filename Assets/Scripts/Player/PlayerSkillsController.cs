@@ -75,8 +75,8 @@ public class PlayerSkillsController : MonoBehaviour
 		playerInput.OnSwitchSkill += SwitchSkill;
 		playerInput.OnUseSkill += PerformSkill;
 
-		playerInput._OnOpenSkillWheel += SetSkillWheelStatus;
-		playerInput._OnUseGamepadSkill += PerformSkillGamepad;
+		//playerInput._OnOpenSkillWheel += SetSkillWheelStatus;
+		//playerInput._OnUseGamepadSkill += PerformSkillGamepad;
 	}
 
 	private void Update()
@@ -109,25 +109,7 @@ public class PlayerSkillsController : MonoBehaviour
 		UseSkillAtIndex(selectedSkillIndex);
 	}
 
-	private void SetSkillWheelStatus(bool status)
-	{
-		//Debug.Log("Wheel is enabled: " + status);
-		skillWheelActive = status;
-	}
-
-	//OJO, hay que ver si esta es la mejor manera para las skills del gamepad o habria que crear otro tipo de evento para que se reciba un index
-	//lo suyo seria que cada slot de skill tuviese un indice fijo, y se ejecutase la skill asociada a ese slot fijo
-	//Por ejemplo, la skill del boton A SIEMPRE va a tener el indice 0, lo unico que cambia es la potencial skill asignada a ese slot con ese indice, y asi con todas
-	private void PerformSkillGamepad(int skillIndex)
-	{
-		if(skillWheelActive)
-		{
-			Debug.Log("Performing skill on index " + skillIndex);
-			UseSkillAtIndex(skillIndex);
-		}
-	}
-
-
+	
 	private void UseSkillAtIndex(int index)
 	{
 		if (index < 0 || index >= MAX_SKILL_SLOTS) return;
@@ -147,7 +129,7 @@ public class PlayerSkillsController : MonoBehaviour
 			
 		else
 		{
-			Debug.Log("Skill cannot be used while it´s on cooldown");
+			Debug.Log("Skill cannot be used while it?s on cooldown");
 		}
 	}
 
@@ -167,7 +149,7 @@ public class PlayerSkillsController : MonoBehaviour
 		// Desequipar habilidad actual si existe
 		if (equippedSkills[slotIndex] != null)
 		{
-			//equippedSkills[slotIndex].OnUnequip(); // Asumiendo que implementaste este método
+			//equippedSkills[slotIndex].OnUnequip(); // Asumiendo que implementaste este m?todo
 		}
 
 		// Crear nueva instancia

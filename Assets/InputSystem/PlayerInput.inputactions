@@ -31,6 +31,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Hook",
+                    "type": "Button",
+                    "id": "d0719593-fda3-48a3-8bb7-a8f397d44b7b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -143,6 +152,28 @@
                     "action": "Dash",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7ce775b2-241c-4b14-88e1-dfc7443e76c8",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Hook",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "19665a68-3270-4f34-9ae8-a17c6aa4164b",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Hook",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -181,6 +212,15 @@
                     "name": "SetWeaponStatus",
                     "type": "Button",
                     "id": "699b4082-326c-4dee-8571-06efc5d93b3c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SetWeaponEffect",
+                    "type": "Button",
+                    "id": "5e2c6322-5def-4cde-b020-a4e923ff5562",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -268,11 +308,33 @@
                 {
                     "name": "",
                     "id": "d2b7ec1b-6dd6-46ed-9b4a-73e75aa6f12e",
-                    "path": "<Gamepad>/dpad/up",
+                    "path": "<Gamepad>/dpad/down",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "SetWeaponStatus",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "351733b5-9e07-4c31-a471-31afcd48fb7c",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SetWeaponEffect",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "73dab6d0-7e6d-4575-a440-6fc57fcea303",
+                    "path": "<Gamepad>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SetWeaponEffect",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -360,8 +422,30 @@
                 },
                 {
                     "name": "",
+                    "id": "c8320a10-cd29-410e-9459-c986a28f28c6",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SwitchSkill",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "42d2fea7-1a86-41fb-9c9c-63045370e812",
                     "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UseSkill",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ed8cfc89-0e05-4c37-9ffe-4b07d9e0e205",
+                    "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

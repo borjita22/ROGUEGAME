@@ -6,8 +6,9 @@ public class Torch : EffectableObject, IPickable
 {
 	public PickableWeight weight { get; protected set; }
 
+	[SerializeField] private bool isLit;
 
-	//Esta antorcha debe de poder añadir, si se desea, una propiedad de efecto Fire desde el comienzo
+	//Esta antorcha debe de poder a?adir, si se desea, una propiedad de efecto Fire desde el comienzo
 
 	protected override void Awake()
 	{
@@ -15,7 +16,15 @@ public class Torch : EffectableObject, IPickable
 		weight = PickableWeight.Light;
 	}
 
-	public override InteractionResult Interact(PlayerInteractionsController controller)
+    private void Start()
+    {
+        if(isLit)
+        {
+			ApplyEffect(EffectType.Fire);
+        }
+    }
+
+    public override InteractionResult Interact(PlayerInteractionsController controller)
 	{
 		// Si puede ser recogida, la recogemos
 		PickUp(weight == PickableWeight.Heavy ?
@@ -65,7 +74,7 @@ public class Torch : EffectableObject, IPickable
 		if(effectObject)
 		{
 			effectObject.transform.position = transform.Find("FirePoint").transform.position;
-			//hay que hacerlo mas pequeño
+			//hay que hacerlo mas peque?o
 			effectObject.transform.localScale *= 0.5f; //reducir la escala a la mitad para que se vea mejor el efecto
 		}
 	}

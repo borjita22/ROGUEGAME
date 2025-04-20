@@ -13,6 +13,7 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 	private InputAction attackAction;
 	private InputAction resetVRotationAction;
 	private InputAction weaponStatusAction;
+	private InputAction weaponEffectAction;
 
 	//Jump action
 	private InputAction jumpAction;
@@ -20,16 +21,12 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 	//Dash action
 	private InputAction dashAction;
 
+	//Hook action
+	private InputAction hookAction;
+
 	//Skill related actions: Keyboard
 	private InputAction switchSkillAction;
 	private InputAction useSkillAction;
-
-	//Skill related actions: Gamepad
-	private InputAction openSkillWheelAction;
-	private InputAction useSkillA_Action;
-	private InputAction useSkillB_Action;
-	private InputAction useSkillX_Action;
-	private InputAction useSkillY_Action;
 
 	//Interaction related actions
 	private InputAction interactAction;
@@ -66,7 +63,7 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 			}
 			else
 			{
-				// Para el ratón, devolver la posición tal cual
+				// Para el rat?n, devolver la posici?n tal cual
 				return rawInput;
 			}
 		}
@@ -103,7 +100,11 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 	//quien tenga acceso a la cantidad de salud y mana del jugador
 	public event Action OnHealthRecover; 
 	public event Action OnManaRecover;
-	
+
+
+	public event Action OnSwitchWeaponEffect;
+
+	public event Action OnHookEnabled;
 
 
 	//TODO: Refactorizar para mejor division entre movimiento, ataque y skills
@@ -117,18 +118,14 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		attackAction = playerInput.FindActionMap("Combat").FindAction("Attack");
 		resetVRotationAction = playerInput.FindActionMap("Combat").FindAction("ResetVerticalRotation");
 		weaponStatusAction = playerInput.FindActionMap("Combat").FindAction("SetWeaponStatus");
+		weaponEffectAction = playerInput.FindActionMap("Combat").FindAction("SetWeaponEffect");
 
 		jumpAction = playerInput.FindActionMap("Movement").FindAction("Jump");
 		dashAction = playerInput.FindActionMap("Movement").FindAction("Dash");
+		hookAction = playerInput.FindActionMap("Movement").FindAction("Hook");
 
 		switchSkillAction = playerInput.FindActionMap("Skills").FindAction("SwitchSkill");
 		useSkillAction = playerInput.FindActionMap("Skills").FindAction("UseSkill");
-
-		openSkillWheelAction = playerInput.FindActionMap("Skills").FindAction("OpenSkillWheel");
-		useSkillA_Action = playerInput.FindActionMap("Skills").FindAction("UseSkillA");
-		useSkillB_Action = playerInput.FindActionMap("Skills").FindAction("UseSkillB");
-		useSkillX_Action = playerInput.FindActionMap("Skills").FindAction("UseSkillX");
-		useSkillY_Action = playerInput.FindActionMap("Skills").FindAction("UseSkillY");
 
 		interactAction = playerInput.FindActionMap("Interaction").FindAction("Interact");
 		healthRecoverAction = playerInput.FindActionMap("Interaction").FindAction("HealthRecover");
@@ -138,15 +135,19 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		attackAction.canceled += OnAttackCanceled;
 		resetVRotationAction.performed += OnResetVRotationPerformed;
 		weaponStatusAction.performed += SetWeaponStatus;
+		weaponEffectAction.performed += SwitchWeaponEffect;
 
 		jumpAction.performed += OnJumpPerformed;
 		jumpAction.canceled += OnJumpCancelled;
 
 		dashAction.performed += ctx => OnDashPerformed();
 
+		hookAction.performed += OnUseHook;
+
 		switchSkillAction.performed += ctx => SwitchSkillAction();
 		useSkillAction.performed += ctx => UseSkillKeyboard();
 
+		/*
 		openSkillWheelAction.performed += ctx => OnSkillWheelStatusChange(true);
 		openSkillWheelAction.canceled += ctx => OnSkillWheelStatusChange(false);
 
@@ -154,7 +155,7 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		useSkillB_Action.performed += ctx => OnUseSkillOnGamepad(1);
 		useSkillX_Action.performed += ctx => OnUseSkillOnGamepad(2);
 		useSkillY_Action.performed += ctx => OnUseSkillOnGamepad(3);
-
+		*/
 		interactAction.performed += ctx => OnInteract?.Invoke();
 		healthRecoverAction.performed += ctx => OnHealthRecover?.Invoke();
 		manaRecoverAction.performed += ctx => OnManaRecover?.Invoke();
@@ -190,19 +191,15 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		attackAction.Enable();
 		resetVRotationAction.Enable();
 		weaponStatusAction.Enable();
+		weaponEffectAction.Enable();
 
 		jumpAction.Enable();
 		dashAction.Enable();
+		hookAction.Enable();
 
 
 		switchSkillAction.Enable();
 		useSkillAction.Enable();
-		openSkillWheelAction.Enable();
-
-		useSkillA_Action.Enable();
-		useSkillB_Action.Enable();
-		useSkillX_Action.Enable();
-		useSkillY_Action.Enable();
 
 		interactAction.Enable();
 		healthRecoverAction.Enable();
@@ -216,15 +213,19 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		attackAction.canceled -= OnAttackCanceled;
 		resetVRotationAction.performed -= OnResetVRotationPerformed;
 		weaponStatusAction.performed -= SetWeaponStatus;
+		weaponEffectAction.performed -= SwitchWeaponEffect;
 
 		jumpAction.performed -= OnJumpPerformed;
 		jumpAction.canceled -= OnJumpCancelled; //Esto ya no me interesa
 
 		dashAction.performed -= ctx => OnDashPerformed();
 
+		hookAction.performed -= OnUseHook;
+
 		switchSkillAction.performed -= ctx => SwitchSkillAction();
 		useSkillAction.performed -= ctx => UseSkillKeyboard();
 
+		/*
 		openSkillWheelAction.performed -= ctx => OnSkillWheelStatusChange(true);
 		openSkillWheelAction.canceled -= ctx => OnSkillWheelStatusChange(false);
 
@@ -232,6 +233,7 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		useSkillB_Action.performed -= ctx => OnUseSkillOnGamepad(1);
 		useSkillX_Action.performed -= ctx => OnUseSkillOnGamepad(2);
 		useSkillY_Action.performed -= ctx => OnUseSkillOnGamepad(3);
+		*/
 
 		interactAction.performed -= ctx => OnInteract?.Invoke();
 		healthRecoverAction.performed -= ctx => OnHealthRecover?.Invoke();
@@ -241,19 +243,17 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		aimingAction?.Disable();
 		attackAction.Disable();
 		resetVRotationAction.Disable();
+		weaponStatusAction.Disable();
+		weaponEffectAction.Disable();
 
 		jumpAction.Disable();
 		dashAction.Disable();
+		hookAction.Disable();
 
 
 		switchSkillAction.Disable();
 		useSkillAction.Disable();
-		openSkillWheelAction.Disable();
 
-		useSkillA_Action.Disable();
-		useSkillB_Action.Disable();
-		useSkillX_Action.Disable();
-		useSkillY_Action.Disable();
 
 		interactAction.Disable();
 		healthRecoverAction.Disable();
@@ -283,6 +283,12 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 	{
 		OnDash?.Invoke();
 	}
+
+	private void OnUseHook(InputAction.CallbackContext context)
+	{
+		OnHookEnabled?.Invoke();
+	}
+
 	private void OnAttackPerformed(InputAction.CallbackContext context)
 	{
 		isAttacking = true; //esta variable de aqui de momento no nos esta sirviendo para nada
@@ -310,6 +316,11 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 
 	}
 
+	private void SwitchWeaponEffect(InputAction.CallbackContext context)
+    {
+		OnSwitchWeaponEffect?.Invoke();
+    }
+
 	public void DisableWeapon()
 	{
 		weaponEnabled = false;
@@ -334,18 +345,7 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 		OnUseSkill?.Invoke();
 	}
 
-
-	private void OnSkillWheelStatusChange(bool status)
-	{
-		skillsWheelEnabled = status;
-
-		_OnOpenSkillWheel?.Invoke(status);
-	}
-
-	private void OnUseSkillOnGamepad(int index)
-	{
-		_OnUseGamepadSkill?.Invoke(index);
-	}
+	
 
 	public bool IsJumpHeld()
 	{

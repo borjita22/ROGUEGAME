@@ -20,10 +20,15 @@ public class PlayerInteractionsController : MonoBehaviour
 	public IInteractable interactableInHand;
 	private IPushable currentPushable;
 
-	//public bool IsConsumedOnInteraction => false;
 
 	public Action<bool> OnHeavyCarrying;
 	public Action<bool> OnLightCarrying;
+
+	//vamos a comenzar a meter estadisticas del jugador. Las stats del jugador iran en un controlador de stats, que sera
+	//el que gestione el cambio de valores de los atributos y su comunicacion con el resto de clases del juego
+	[SerializeField] private PlayerStats playerStats;
+
+	public PlayerStats PlayerStats => playerStats;
 
 	private void Awake()
 	{
@@ -71,7 +76,7 @@ public class PlayerInteractionsController : MonoBehaviour
 
 			if (closestInteractable != null)
 			{
-				// Permitir que el objeto maneje su propia interacción
+				// Permitir que el objeto maneje su propia interacci?n
 				InteractionResult result = closestInteractable.Interact(this);
 				HandleInteractionResult(result, closestInteractable);
 			}
@@ -172,12 +177,12 @@ public class PlayerInteractionsController : MonoBehaviour
 	{
 		IInteractable interactable = other.GetComponent<IInteractable>();
 		
-		//Si existe el objeto, no esta en la lista y no lo tengo en la mano, se añade a la lista
+		//Si existe el objeto, no esta en la lista y no lo tengo en la mano, se a?ade a la lista
 		//de interactuables en rango de interaccion
 		if(interactable != null && !interactablesInRange.Contains(interactable) && interactable != interactableInHand)
 		{
 			interactablesInRange.Add(interactable);
-			Debug.Log($"{interactable} añadido a la lista de interactuables en rango");
+			Debug.Log($"{interactable} a?adido a la lista de interactuables en rango");
 		}
 	}
 
@@ -240,16 +245,16 @@ public class PlayerInteractionsController : MonoBehaviour
 				break;
 
 			case InteractionResult.ItemConsumed:
-				// El objeto ya se consumió/destruyó en su propia lógica
-				// No necesitamos hacer nada aquí
+				// El objeto ya se consumi?/destruy? en su propia l?gica
+				// No necesitamos hacer nada aqu?
 				break;
 
 			case InteractionResult.InteractionApplied:
-				// Interacción genérica completada
+				// Interacci?n gen?rica completada
 				break;
 
 			case InteractionResult.None:
-				// No ocurrió nada especial
+				// No ocurri? nada especial
 				break;
 		}
 	}
