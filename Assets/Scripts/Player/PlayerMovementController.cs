@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMovementController : MonoBehaviour
@@ -30,6 +31,11 @@ public class PlayerMovementController : MonoBehaviour
     private float initialJumpVelocity;
     [SerializeField] private bool isJumping = false;
     private float jumpTimer = 0f;
+
+    [Space]
+    [Header("Jump buffer input config")]
+    private Queue<float> jumpInputBuffer = new Queue<float>();
+    [SerializeField] private float jumpBufferedTime = 0.2f;
 
     [Space]
     [Header("Dash configuration")]
@@ -143,19 +149,52 @@ public class PlayerMovementController : MonoBehaviour
 		}
         else if(isGrounded)
 		{
-            ResetJumpState();
-            if(isGrappling && grapplingStarted)
+            if(rb.velocity.y < 0.1f)
+			{
+                ResetJumpState(); //esto deberia resetearse solamente si tocas el suelo estando en estado jumping
+            }
+            if (isGrappling && grapplingStarted)
             {
                 isGrappling = false;
                 grapplingStarted = false;
             }
+
+            ProcessBufferedJump();
             
 		}
 
         UpdateDashCooldown();
+
+        CleanJumpBuffer();
 	}
 
-	private void UpdateJumpTime()
+    private void ProcessBufferedJump()
+	{
+        if(jumpInputBuffer.Count > 0 && isGrounded)
+		{
+            float oldest = jumpInputBuffer.Peek();
+
+            if(Time.time - oldest <= jumpBufferedTime)
+			{
+                jumpIndex = 0;
+                //PerformJump();
+                Invoke(nameof(PerformJump), 0.05f); //Introducir pequeño delay al salto en buffer
+			}
+
+            jumpInputBuffer.Clear();
+		}
+	}
+
+    private void CleanJumpBuffer()
+    {
+        // Eliminar entradas que excedan el tiempo del buffer
+        while (jumpInputBuffer.Count > 0 && Time.time - jumpInputBuffer.Peek() > jumpBufferedTime)
+        {
+            jumpInputBuffer.Dequeue();
+        }
+    }
+
+    private void UpdateJumpTime()
 	{
 		if (rb.velocity.y > 0)
 		{
@@ -179,6 +218,7 @@ public class PlayerMovementController : MonoBehaviour
 	private void FixedUpdate()
     {
         ApplyGravityModifiers();
+        //ProcessStepClimb();
         ProcessMovement();
         ManageCharacterOrientation();
         
@@ -233,14 +273,33 @@ public class PlayerMovementController : MonoBehaviour
         // Aplicar movimiento con suavizado
         currentVelocity.x = Mathf.MoveTowards(currentVelocity.x, targetVelocity.x, smoothFactor * Time.fixedDeltaTime);
         currentVelocity.z = Mathf.MoveTowards(currentVelocity.z, targetVelocity.z, smoothFactor * Time.fixedDeltaTime);
+
         currentVelocity.y = rb.velocity.y;
 
+
         //reducir velocidad de movimiento x y z si el jugador esta saltando
-        if(!isGrounded && isJumping)
-		{
+        if (isJumping)
+        {
+            // Durante un salto intencional, mantener la velocidad vertical del Rigidbody
+            currentVelocity.y = rb.velocity.y;
+
+            // Reducir velocidad de movimiento x y z si el jugador está saltando
             currentVelocity.x /= horizontalMoveDecelerationFactor;
             currentVelocity.z /= horizontalMoveDecelerationFactor;
-		}
+        }
+        else if (!isGrounded && rb.velocity.y > 0)
+        {
+            // Si no estamos en un salto intencional pero estamos moviéndonos hacia arriba 
+            // (probablemente por un "rebote" al subir un escalón)
+            // Limitar la velocidad vertical para evitar saltos no deseados
+            float maxUnintendedYVelocity = 1f; // Ajustar este valor según necesites
+            currentVelocity.y = Mathf.Min(rb.velocity.y, maxUnintendedYVelocity);
+        }
+        else
+        {
+            // En otros casos (en el suelo o cayendo) mantener la velocidad vertical
+            currentVelocity.y = rb.velocity.y;
+        }
 
         // Aplicar velocidad al rigidbody
         rb.velocity = currentVelocity;
@@ -252,6 +311,35 @@ public class PlayerMovementController : MonoBehaviour
     private void CheckGrounded()
 	{
         isGrounded = Physics.CheckSphere(groundCheckpoint.position, groundCheckRadius, groundLayer);
+	}
+
+    private void ProcessStepClimb()
+	{
+        if (!isGrounded || isJumping) return;
+
+        if (rb.velocity.magnitude < 0.1f) return;
+
+        RaycastHit hit;
+
+        Vector3 rayStart = groundCheckpoint.transform.position + new Vector3(0f, 0.1f, 0f);
+
+        if(Physics.Raycast(rayStart, rb.velocity, out hit, 0.5f, groundLayer))
+		{
+            Vector3 secondaryRay = rayStart + new Vector3(0, 0.4f, 0);
+
+            RaycastHit hit2;
+
+            if(!Physics.Raycast(secondaryRay, rb.velocity, out hit2, 0.6f, groundLayer))
+			{
+                rb.position += new Vector3(0, Time.fixedDeltaTime * 2f, 0);
+
+                Vector3 velocity = rb.velocity;
+
+                velocity.y = Mathf.Max(velocity.y, 0);
+
+                rb.velocity = velocity;
+			}
+		}
 	}
 
 
@@ -302,18 +390,26 @@ public class PlayerMovementController : MonoBehaviour
         {
             jumpIndex = 0;
             PerformJump();
+
+            jumpInputBuffer.Clear();
         }
         else if(canDoubleJump && jumpIndex == 0)
         {
             PerformJump();
             jumpIndex++;
+
+            jumpInputBuffer.Clear();
         }
+        else
+		{
+            jumpInputBuffer.Enqueue(Time.time);
+		}
+        //comprobar si no esta en el suelo y si el inputBuffer tiene algun elemento que extraer
 
     }
 
     private void PerformJump()
     {
-        OnJump?.Invoke(true);
         isJumpFinished = false;
         initialJumpVelocity = Mathf.Sqrt(jumpForce * Mathf.Abs(Physics.gravity.y));
 
@@ -327,16 +423,29 @@ public class PlayerMovementController : MonoBehaviour
 
         isJumping = true;
         jumpTimer = 0f;
+
+        OnJump?.Invoke(true);
     }
 
+    //Aqui tambien, para poder realizar el dash, hay que tener en cuenta que no podemos estar en colision con una pared lateral o, mas bien, hay que detener el dash cuando colisionemos con una 
     private void InitializeDash()
 	{
         if (!dashEnabled || isDashOnCooldown) return;
 
         OnDash?.Invoke(true);
         Vector3 direction = new Vector3(playerInput.MovementInput.x, 0f, playerInput.MovementInput.y);
-        dashCoroutine = SkillCoroutineRunner.Instance.RunCoroutine(
+        if(direction != Vector3.zero)
+		{
+            dashCoroutine = SkillCoroutineRunner.Instance.RunCoroutine(
             PerformDashMovement(direction));
+        }
+        else
+		{
+            Vector3 defaultDirection = isFacingRight ? Vector3.right : Vector3.left;
+
+            dashCoroutine = SkillCoroutineRunner.Instance.RunCoroutine(
+            PerformDashMovement(defaultDirection));
+        }
 
     }
 
@@ -380,6 +489,7 @@ public class PlayerMovementController : MonoBehaviour
         // Iniciar cooldown
         CancelDash();
         //StartCooldown();
+        StartDashCooldown();
 
     }
 
@@ -467,7 +577,18 @@ public class PlayerMovementController : MonoBehaviour
         grapplingStarted = true;
     }
 
-    private void OnDrawGizmos()
+	private void OnCollisionStay(Collision collision)
+	{
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Wall"))
+        {
+            if (isExecutingDash)
+            {
+                CancelDash();
+            }
+        }
+    }
+
+	private void OnDrawGizmos()
 	{
         if (groundCheckpoint != null)
         {

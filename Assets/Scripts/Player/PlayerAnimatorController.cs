@@ -128,6 +128,17 @@ public class PlayerAnimatorController : MonoBehaviour
 		{
 			Debug.Log("Changing jumping status");
 			animator.SetBool("IsGrounded", !status);
+			
+			if(status == true)
+			{
+				animator.SetTrigger("TriggerJump");
+			}
+			else
+			{
+				animator.ResetTrigger("TriggerJump");
+			}
+			
+			animator.SetBool("Jumping", status);
 		}
 	}
 
