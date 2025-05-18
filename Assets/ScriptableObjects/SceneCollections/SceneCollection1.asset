@@ -9,14 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7842aaed49874717aff357eab063466, type: 3}
-  m_Name: Player Stats
+  m_Script: {fileID: 11500000, guid: 7301254830d7e43f59e2843db77f17b7, type: 3}
+  m_Name: SceneCollection1
   m_EditorClassIdentifier: 
-  HealthLevel: 1
-  ArmorLevel: 1
-  DamageLevel: 1
-  StrengthLevel: 1
-  ManaLevel: 1
-  LuckLevel: 1
-  SpeedLevel: 10
-  WeaponLevel: 1
+  ScenesToLoad:
+  - SceneName: M1_L1_01
+    weight: 50
+  - SceneName: M1_L1_02
+    weight: 25
+  - SceneName: M1_L1_03
+    weight: 75

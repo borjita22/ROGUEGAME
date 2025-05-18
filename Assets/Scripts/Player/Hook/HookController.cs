@@ -329,20 +329,19 @@ public class HookController : MonoBehaviour
 
         isGrappling = false;
         //ResetJointConfiguration();
+        OnGrapplingStarted?.Invoke();
 
         Invoke(nameof(StopGrappling), 0.5f); //Esto va a ser el cooldown para poder volver a usar el gancho
     }
 
     private void StopGrappling()
     {
-        /*
+        
         if(movementController)
         {
             movementController.isGrappling = false;
         }
-        */
-        OnGrapplingStarted?.Invoke();
-        
+   
     }
 
     public void EnableRopeGrappling()

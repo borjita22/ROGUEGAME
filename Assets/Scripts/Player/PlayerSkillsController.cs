@@ -118,6 +118,10 @@ public class PlayerSkillsController : MonoBehaviour
 		{
 			if(!(equippedSkills[index].Definition is ProjectileSkillDefinition))
 			{
+				if(playerController == null)
+				{
+					playerController = GetComponent<PlayerController>();
+				}
 				equippedSkills[index].Use(playerController.GetMovementDirection()); //Esto seria momentaneo, solamente para ver si se ejecuta la skill que corresponda
 			}
 			else

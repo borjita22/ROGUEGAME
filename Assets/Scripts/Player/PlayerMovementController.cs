@@ -6,6 +6,7 @@ public class PlayerMovementController : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Transform spriteTransform;
+    [SerializeField] private PlayerStats playerStats;
 
     [Header("Movement Configuration")]
     [SerializeField] private float moveSpeed = 8f;
@@ -14,6 +15,18 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private float deceleration = 35f;
     [SerializeField] private float directionChangeMultiplier = 1.5f;
     [SerializeField] private AnimationCurve speedCurve = AnimationCurve.Linear(0, 0, 1, 1); // Para mapear el input a la velocidad
+
+    [Space]
+    [Header("Ground state configuration")]
+    [SerializeField] private PhysicMaterial playerPhysicsMaterial;
+    [SerializeField] private float defaultDrag = 0.5f;
+    [SerializeField] private float slopeDrag = 5f;
+
+    [SerializeField] private float slopeAngleThreshold = 20f;
+    [SerializeField] private float slopeRaycastDistance = 1.5f;
+    [SerializeField] private float movementThreshold = 0.1f;
+    [SerializeField] private bool isOnSlope = false;
+    [SerializeField] private float currentSurfaceAngle = 0f;
 
     [Space]
     [Header("Jump configuration")]
@@ -29,7 +42,7 @@ public class PlayerMovementController : MonoBehaviour
     private int jumpIndex = 0;
     [SerializeField] private bool canDoubleJump;
     private float initialJumpVelocity;
-    [SerializeField] private bool isJumping = false;
+    [SerializeField] public bool isJumping = false;
     private float jumpTimer = 0f;
 
     [Space]
@@ -45,9 +58,10 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private float dashCooldown;
     private float remainingCooldown;
     private bool isDashOnCooldown = false;
-    private bool isExecutingDash = false;
+    [SerializeField] private bool isExecutingDash = false;
     private Coroutine dashCoroutine;
     [SerializeField] private GameObject dashTrail;
+    private bool dashRaycastCollide = false;
 
 
     // Variables internas
@@ -71,12 +85,12 @@ public class PlayerMovementController : MonoBehaviour
 
     private bool isFacingRight = true;
 
-    [SerializeField] private PlayerStats playerStats;
+    
 
     private HookController hookController;
 
     public bool isGrappling = false;
-    private bool grapplingStarted = false;
+    [SerializeField] private bool grapplingStarted = false;
 
     private void Awake()
     {
@@ -86,6 +100,7 @@ public class PlayerMovementController : MonoBehaviour
         if (rb)
         {
             rb.constraints = RigidbodyConstraints.FreezeRotation;
+            playerPhysicsMaterial = GetComponent<Collider>().material;
         }
 
         hookController = GetComponentInChildren<HookController>();
@@ -142,6 +157,7 @@ public class PlayerMovementController : MonoBehaviour
 	private void Update()
 	{
         CheckGrounded();
+        CheckSurfaceAngle();
         
         if(!isGrounded && isJumping)
 		{
@@ -153,7 +169,7 @@ public class PlayerMovementController : MonoBehaviour
 			{
                 ResetJumpState(); //esto deberia resetearse solamente si tocas el suelo estando en estado jumping
             }
-            if (isGrappling && grapplingStarted)
+            if (grapplingStarted)
             {
                 isGrappling = false;
                 grapplingStarted = false;
@@ -163,6 +179,7 @@ public class PlayerMovementController : MonoBehaviour
             
 		}
 
+        DashRaycastDetection();
         UpdateDashCooldown();
 
         CleanJumpBuffer();
@@ -218,15 +235,15 @@ public class PlayerMovementController : MonoBehaviour
 	private void FixedUpdate()
     {
         ApplyGravityModifiers();
-        //ProcessStepClimb();
         ProcessMovement();
+        AdjustDragForSlope();
         ManageCharacterOrientation();
         
     }
 
     private void ProcessMovement()
     {
-        if (isGrappling) return;
+        if (isGrappling || isExecutingDash) return;
 
         // Obtener input
         Vector2 input = playerInput.MovementInput;
@@ -245,7 +262,7 @@ public class PlayerMovementController : MonoBehaviour
         float speedFactor = speedCurve.Evaluate(inputMagnitude);
 
         // Calcular velocidad objetivo basada en la magnitud del input
-        Vector3 targetVelocity = movementDirection * moveSpeed * speedFactor;
+        Vector3 targetVelocity = movementDirection * (moveSpeed + (0.25f * playerStats.Speed)) * speedFactor;
 
         // Calcular factor de suavizado
         float smoothFactor;
@@ -253,7 +270,7 @@ public class PlayerMovementController : MonoBehaviour
         if (inputMagnitude > 0.1f)
         {
             // Comprobar si hay un cambio significativo de direcci?n
-            if (Vector3.Dot(movementDirection, MovementDirection) < 0.5f && IsMoving)
+            if (Vector3.Dot(movementDirection, MovementDirection) < 0.5f)
             {
                 // Cambio brusco de direcci?n - aplicar factor multiplicador
                 smoothFactor = acceleration * directionChangeMultiplier;
@@ -263,6 +280,8 @@ public class PlayerMovementController : MonoBehaviour
                 // Aceleraci?n normal
                 smoothFactor = acceleration;
             }
+
+            Debug.Log("Movement speed " + (moveSpeed + (0.25f * playerStats.Speed)));
         }
         else
         {
@@ -311,37 +330,8 @@ public class PlayerMovementController : MonoBehaviour
     private void CheckGrounded()
 	{
         isGrounded = Physics.CheckSphere(groundCheckpoint.position, groundCheckRadius, groundLayer);
+        
 	}
-
-    private void ProcessStepClimb()
-	{
-        if (!isGrounded || isJumping) return;
-
-        if (rb.velocity.magnitude < 0.1f) return;
-
-        RaycastHit hit;
-
-        Vector3 rayStart = groundCheckpoint.transform.position + new Vector3(0f, 0.1f, 0f);
-
-        if(Physics.Raycast(rayStart, rb.velocity, out hit, 0.5f, groundLayer))
-		{
-            Vector3 secondaryRay = rayStart + new Vector3(0, 0.4f, 0);
-
-            RaycastHit hit2;
-
-            if(!Physics.Raycast(secondaryRay, rb.velocity, out hit2, 0.6f, groundLayer))
-			{
-                rb.position += new Vector3(0, Time.fixedDeltaTime * 2f, 0);
-
-                Vector3 velocity = rb.velocity;
-
-                velocity.y = Mathf.Max(velocity.y, 0);
-
-                rb.velocity = velocity;
-			}
-		}
-	}
-
 
     private void ApplyGravityModifiers()
 	{
@@ -381,6 +371,40 @@ public class PlayerMovementController : MonoBehaviour
 		{
             this.transform.localScale = new Vector3(1f, 1f, 1f);
             isFacingRight = true;
+        }
+	}
+
+    private void CheckSurfaceAngle()
+	{
+        if(Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, slopeRaycastDistance, groundLayer))
+		{
+            currentSurfaceAngle = Vector3.Angle(hitInfo.normal, Vector3.up);
+            isOnSlope = currentSurfaceAngle > slopeAngleThreshold;
+		}
+        else
+		{
+            isOnSlope = false;
+            currentSurfaceAngle = 0f;
+		}
+	}
+
+    private void AdjustDragForSlope()
+	{
+        //bool isMoving = rb.velocity != Vector3.zero;
+
+        if(isOnSlope)
+		{
+            if(playerPhysicsMaterial)
+			{
+                playerPhysicsMaterial.staticFriction = slopeDrag;
+			}
+		}
+        else
+		{
+            if (playerPhysicsMaterial)
+            {
+                playerPhysicsMaterial.staticFriction = defaultDrag;
+            }
         }
 	}
 
@@ -433,67 +457,89 @@ public class PlayerMovementController : MonoBehaviour
         if (!dashEnabled || isDashOnCooldown) return;
 
         OnDash?.Invoke(true);
-        Vector3 direction = new Vector3(playerInput.MovementInput.x, 0f, playerInput.MovementInput.y);
-        if(direction != Vector3.zero)
-		{
-            dashCoroutine = SkillCoroutineRunner.Instance.RunCoroutine(
+        Vector3 direction = GetMovementDirection();
+
+        dashCoroutine = SkillCoroutineRunner.Instance.RunCoroutine(
             PerformDashMovement(direction));
-        }
-        else
-		{
-            Vector3 defaultDirection = isFacingRight ? Vector3.right : Vector3.left;
 
-            dashCoroutine = SkillCoroutineRunner.Instance.RunCoroutine(
-            PerformDashMovement(defaultDirection));
-        }
-
+        dashEnabled = false;
     }
 
+    private Vector3 GetMovementDirection()
+	{
+        Vector3 movementDirection = new Vector3(playerInput.MovementInput.x, 0f, playerInput.MovementInput.y);
 
+        if(movementDirection == Vector3.zero)
+		{
+            movementDirection = isFacingRight ? Vector3.right : Vector3.left;
+        }
+
+        return movementDirection;
+	}
 
     private IEnumerator PerformDashMovement(Vector3 direction)
     {
-        //IsExecuting = true;
         isExecutingDash = true;
-
         remainingCooldown = dashCooldown;
-
         PlayDashFeedback();
 
-        // Normalizar direcci?n
-        direction = direction.normalized;
+        // Guardar la velocidad original
+        Vector3 originalVelocity = rb.velocity;
 
-        // Variables para tracking
-        float distanceTraveled = 0f;
+        // Deshabilitar la gravedad temporalmente
+        rb.useGravity = false;
 
-        while (distanceTraveled < dashDistance)
+        // Duración total del dash
+        float dashDuration = dashDistance / dashSpeed;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < dashDuration)
         {
-            float moveStep = dashSpeed * Time.deltaTime;
+            // Usar una curva de velocidad para suavizar inicio y fin
+            float t = elapsedTime / dashDuration;
+            float speedFactor = Mathf.Sin(t * Mathf.PI); // Forma de campana suave
 
-            if (distanceTraveled + moveStep > dashDistance)
-            {
-                moveStep = dashDistance - distanceTraveled;
-            }
+            // Aplicar velocidad directamente al rigidbody
+            rb.velocity = direction * dashSpeed * speedFactor;
 
+            elapsedTime += Time.deltaTime;
 
-            // Mover al jugador
-            this.transform.position += (direction * moveStep);
-            distanceTraveled += moveStep;
-
-            // Detectar interacciones durante el dash
-            //DetectDashInteractions(direction);
+            // Si hay colisión, salir del bucle
+            if (dashRaycastCollide)
+                break;
 
             yield return null;
         }
 
-        // Iniciar cooldown
-        CancelDash();
-        //StartCooldown();
+        
+
+        CancelDash(direction, originalVelocity);
         StartDashCooldown();
 
     }
 
-    public void CancelDash()
+    private void DashRaycastDetection()
+	{
+        //lanza un rayo hacia adelante desde la posicion del jugador. si el rayo colisiona con un objeto de la layer ground, se detiene el dash
+        RaycastHit hit;
+
+        Vector3 facingDirection = isFacingRight ? Vector3.right : Vector3.left;
+
+        Debug.DrawRay(transform.position, MovementDirection + facingDirection, Color.yellow);
+
+        if (Physics.Raycast(transform.position, MovementDirection + facingDirection, out hit, 1f, groundLayer))
+		{
+            //Debug.Log("Dash raycast detection hit something");
+            dashRaycastCollide = true;
+            dashEnabled = false;
+        }
+        else
+		{
+            dashRaycastCollide = false;
+		}
+	}
+
+    public void CancelDash(Vector3 direction, Vector3 originalVelocity)
     {
         if(isExecutingDash && dashCoroutine != null)
 		{
@@ -501,7 +547,11 @@ public class PlayerMovementController : MonoBehaviour
             isExecutingDash = false;
             dashCoroutine = null;
 
-            if(dashTrail)
+            // Restaurar la gravedad y permitir una transición suave
+            rb.useGravity = true;
+            rb.velocity = new Vector3(direction.x * moveSpeed * 0.5f, originalVelocity.y, direction.z * moveSpeed * 0.5f);
+
+            if (dashTrail)
 			{
                 dashTrail.SetActive(false);
 			}
@@ -529,28 +579,14 @@ public class PlayerMovementController : MonoBehaviour
 		else
 		{
             isDashOnCooldown = false;
+            //comprobar que no estoy chocando con nada que inhabilite el dash
+            if (dashRaycastCollide == true) return;
+
+            dashEnabled = true;
 		}
 
-        Debug.Log("Remaining dash cooldown " + remainingCooldown);
+        //Debug.Log("Remaining dash cooldown " + remainingCooldown);
 	}
-
-    //protected override void PlayFeedback()
-    //{
-    //    //Muestra un halo (line renderer o algo asi) en la posicion del jugador
-    //    if (Definition.skillPrefab == null) return;
-
-    //    if (dashPrefab == null)
-    //    {
-    //        dashPrefab = GameObject.Instantiate(Definition.skillPrefab, owner.transform);
-    //    }
-    //    else
-    //    {
-    //        dashPrefab.SetActive(true);
-    //    }
-
-    //    dashPrefab.transform.position = owner.transform.position;
-    //    dashPrefab.transform.rotation = owner.transform.rotation;
-    //}
 
     private void PlayDashFeedback()
 	{
@@ -574,16 +610,22 @@ public class PlayerMovementController : MonoBehaviour
 
     private void StartHook()
     {
-        grapplingStarted = true;
+        //grapplingStarted = true;
     }
 
+    //ESTO TAMBIEN TENDRIA QUE AFECTAR A LOS ELEMENTOS DEL SUELO, QUIZAS
+    //HAY QUE TIRAR UN RAYCAST HACIA ADELANTE Y, SI EL RAYCAST COLISIONA CON UN ELEMENTO DE LA LAYER GROUND, POR EJEMPLO, DETENER EL DASH IGUAL
+    //QUE SE HACE AQUI
 	private void OnCollisionStay(Collision collision)
 	{
         if (collision.gameObject.layer == LayerMask.NameToLayer("Wall"))
         {
             if (isExecutingDash)
             {
-                CancelDash();
+                Vector3 direction = GetMovementDirection();
+                Vector3 velocity = rb.velocity;
+
+                CancelDash(direction, velocity);
             }
         }
     }

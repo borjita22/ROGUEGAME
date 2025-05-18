@@ -39,7 +39,7 @@ public class AttackLogic : MonoBehaviour
 
 	private void Awake()
 	{
-		inputHandler = GetComponentInParent<PlayerInputHandler>();
+		inputHandler = FindFirstObjectByType<PlayerInputHandler>();
 
 		recoilSource = GetComponent<CinemachineImpulseSource>();
 

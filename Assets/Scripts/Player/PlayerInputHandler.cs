@@ -111,7 +111,7 @@ public class PlayerInputHandler : MonoBehaviour, IPlayerInput
 
 	private void Awake()
 	{
-		weapon = GetComponentInChildren<Weapon>();
+		weapon = FindFirstObjectByType<Weapon>();
 
 		movementAction = playerInput.FindActionMap("Movement").FindAction("Move");
 		aimingAction = playerInput.FindActionMap("Combat").FindAction("Aim");

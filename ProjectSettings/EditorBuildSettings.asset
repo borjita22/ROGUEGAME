@@ -9,8 +9,14 @@ EditorBuildSettings:
     path: Assets/Scenes/NavigationScene.unity
     guid: 5eafc55e71ee50f41ad0825bb5af36cf
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/Scenes/Mundo 1/M1_L1_01.unity
+    guid: 48e5e0ca109872c48b668520db91f0fd
+  - enabled: 1
+    path: Assets/Scenes/Mundo 1/M1_L1_02.unity
+    guid: a1e36bba994c3014aa64da15051f0533
+  - enabled: 1
+    path: Assets/Scenes/Mundo 1/M1_L1_03.unity
+    guid: 202b74efdb2b2a241b44df0d6c7dba8a
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: a202f7ea7351189458459235ab2c49ae, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

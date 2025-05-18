@@ -9,6 +9,8 @@ public class PlayerAnimatorController : MonoBehaviour
 	private PlayerInteractionsController interactionsController;
 	private PlayerInputHandler inputHandler;
 
+	private bool triggerFalling = false;
+
 	private void Awake()
 	{
         movementController = GetComponent<PlayerMovementController>();
@@ -65,17 +67,35 @@ public class PlayerAnimatorController : MonoBehaviour
 
 	private void Update()
 	{
-		//if(movementController)
-		//{
-		//	if(movementController.GetGroundedState() == false && animator.GetBool("IsGrounded") == true) //Si el jugador no esta en el suelo y no estamos ya en la animacion de jump, la ejecutamos
-		//	{
-		//		animator.SetBool("IsGrounded", false);
-		//	}
-		//	else if(movementController.GetGroundedState() == true && animator.GetBool("IsGrounded") == false) //Si el jugador esta en el suelo y estamos en la animacion de jump, dejamos de estarlo
-		//	{
-		//		animator.SetBool("IsGrounded", true);
-		//	}
-		//}
+		if(movementController)
+		{
+			animator.SetFloat("VerticalVelocity", movementController.GetCurrentVelocity().y);
+
+			//Solo modificar el estado del animator si es distinto del que tenia previamente
+			//Por ejemplo, solo se modifica isGrounded si resulta que IsGrounded en el animator era false y ahora en el controlador
+			//de movimiento es verdad, y viceversa
+			if(movementController.GetGroundedState() != animator.GetBool("IsGrounded"))
+			{
+				animator.SetBool("IsGrounded", movementController.GetGroundedState());
+			}
+
+			if(movementController.GetCurrentVelocity().y < 0f && movementController.GetGroundedState() == false && !movementController.isJumping)
+			{
+				if(!triggerFalling)
+				{
+					animator.SetTrigger("Falling");
+					triggerFalling = true;
+				}
+				
+			}
+			else if(movementController.GetGroundedState() == true) //jugador en el suelo
+			{
+				animator.ResetTrigger("Falling");
+				triggerFalling = false;
+			}
+			
+		}
+		
 	}
 
 	private void HandleVelocityChange(Vector3 currentVelocity)
@@ -126,9 +146,6 @@ public class PlayerAnimatorController : MonoBehaviour
 	{
 		if(animator)
 		{
-			Debug.Log("Changing jumping status");
-			animator.SetBool("IsGrounded", !status);
-			
 			if(status == true)
 			{
 				animator.SetTrigger("TriggerJump");

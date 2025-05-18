@@ -13,6 +13,16 @@ public class AimingLogic : MonoBehaviour
     [SerializeField] private float orbitDistance;
     [SerializeField] private float weaponHeight;
 
+    [Header("Movement Smoothing")]
+    private Vector3 currentVelocity = Vector3.zero;
+    private Vector3 targetOrbitPosition;
+    [SerializeField] private float stationarySmoothTime = 0.1f;
+    [SerializeField] private float movingSmoothTime = 0.03f; // Más rápido cuando se mueve
+    [SerializeField] private float velocityThreshold = 0.5f; // Umbral para considerar que el jugador está en movimiento
+    private Vector3 lastPlayerPosition;
+    private Vector3 playerVelocity;
+
+
     [Header("Visual configuration")]
     [SerializeField] private Vector3 rotationOffset;
     [SerializeField] private bool flipSpriteOnLeftSide = true;
@@ -49,7 +59,7 @@ public class AimingLogic : MonoBehaviour
 
     private void Awake()
 	{
-        inputHandler = GetComponentInParent<PlayerInputHandler>();
+        inputHandler = FindFirstObjectByType<PlayerInputHandler>();
 
         if (mainCamera == null)
             mainCamera = Camera.main;
@@ -97,17 +107,24 @@ public class AimingLogic : MonoBehaviour
 	{
         DetectInputDevice();
 
+        // Procesar el input de apuntado y actualizar la posición/rotación del arma
+        Vector3 displacement = playerTransform.position - lastPlayerPosition;
+        playerVelocity = displacement / Time.fixedDeltaTime;
+        lastPlayerPosition = playerTransform.position;
+
+        ProcessAiming();
+        ProcessVerticalAiming();
+
         // Actualizar la orientación del sprite
         //UpdateSpriteOrientation();
         UpdateSpriteVisibility();
         UpdateAimingLine();
+
     }
 
 	private void FixedUpdate()
 	{
-        // Procesar el input de apuntado y actualizar la posición/rotación del arma
-        ProcessAiming();
-        ProcessVerticalAiming();
+        
     }
 
 	//Esto vamos a poder centralizarlo en otra clase, y tanto el movimiento como el apuntado pueden acudir a esa clase a comprobar
@@ -228,45 +245,54 @@ public class AimingLogic : MonoBehaviour
 
     private void PositionWeaponInOrbit()
     {
-        // 1. Posicionar el arma en órbita alrededor del jugador
-        Vector3 orbitPosition = playerTransform.position + new Vector3(aimDirection.x, weaponHeight, aimDirection.y) * orbitDistance;
+        float currentSmoothTime = (playerVelocity.magnitude > velocityThreshold)
+       ? movingSmoothTime
+       : stationarySmoothTime;
 
-        transform.position = orbitPosition;
+        // Predicción de posición - añadir un poco de la velocidad del jugador
+        Vector3 predictedPosition = playerTransform.position + (playerVelocity * 0.025f);
 
-        // 2. Hacer que el vector forward del arma apunte hacia donde está el ratón/stick
+        // Calcular la posición orbital basada en la posición predictiva
+        targetOrbitPosition = predictedPosition + new Vector3(aimDirection.x, weaponHeight, aimDirection.y) * orbitDistance;
+
+        // Suavizado con el tiempo adecuado
+        transform.position = Vector3.SmoothDamp(
+            transform.position,
+            targetOrbitPosition,
+            ref currentVelocity,
+            currentSmoothTime
+        );
+
         Vector3 targetPoint;
-
         if (usingMouse)
         {
-            // Calcular la distancia entre el ratón y el jugador en el plano XZ
             Vector3 mouseToPlayer = mouseWorldPosition - playerTransform.position;
             mouseToPlayer.y = 0;
 
-            // Si el ratón está muy cerca del jugador, usar la dirección orbital en lugar de la posición exacta
             if (mouseToPlayer.magnitude < orbitDistance)
             {
-                // Usar la dirección de la órbita como dirección de apuntado
                 targetPoint = playerTransform.position + new Vector3(aimDirection.x, 0, aimDirection.y) * 10f;
             }
             else
             {
-                // Usar la posición real del ratón
                 targetPoint = mouseWorldPosition;
             }
         }
         else
         {
-            // Para mando, usar la dirección del stick
             targetPoint = playerTransform.position + new Vector3(aimDirection.x, 0, aimDirection.y) * 10f;
         }
 
         Vector3 directionToTarget = targetPoint - transform.position;
-        directionToTarget.y = 0; // Mantener el arma nivelada
+        directionToTarget.y = 0;
 
         if (directionToTarget.sqrMagnitude > 0.001f)
         {
-            transform.forward = directionToTarget.normalized;
+            // Suavizar también la rotación puede ayudar
+            Quaternion targetRotation = Quaternion.LookRotation(directionToTarget.normalized);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * 15f);
 
+            // Aplicar rotación vertical
             Quaternion verticalRotation = Quaternion.Euler(currentVerticalAngle, 0, 0);
             transform.rotation = transform.rotation * verticalRotation;
         }
